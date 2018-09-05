@@ -2,7 +2,8 @@ run:
 	go run main.go
 
 run-cmd-ls:
-	go run cmd/ls/main.go
+	go build -o out/ls cmd/ls/*.go
+	./out/ls / /non-exist
 
 run-cmd-httpserv:
 	go run cmd/httpserv/main.go
