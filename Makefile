@@ -7,3 +7,6 @@ run-cmd-ls:
 
 run-cmd-httpserv:
 	go run cmd/httpserv/main.go
+
+run-cmd-sqlclient:
+	go run cmd/sqlclient/main.go
