@@ -24,6 +24,12 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/users/", func(w http.ResponseWriter, r *http.Request) {
+		// The "/users/" pattern matches everything prefixed, so we need to check
+		// that we're at the ? here.
+		fmt.Fprintf(w, "TODO")
+	})
+
 	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			// HTTP GET to list users
