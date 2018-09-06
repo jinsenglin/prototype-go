@@ -31,85 +31,55 @@ func main() {
 
 		if r.URL.Path == "/users/" {
 			// /users will be redirected to /users/
-			fmt.Fprintf(w, "/users/")
+
+			if r.Method == "GET" {
+				fmt.Fprintf(w, "TODO: return a list of users")
+			} else if r.Method == "POST" {
+				fmt.Fprintf(w, "TODO: create a user")
+			} else {
+				w.WriteHeader(405)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
 		} else if r.URL.Path == "/users/new" {
-			fmt.Fprintf(w, "/users/new")
+			if r.Method == "GET" {
+				fmt.Fprintf(w, "TODO: return a form for user creation")
+			} else {
+				w.WriteHeader(405)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]$"); re.MatchString(r.URL.Path) {
-			fmt.Fprintf(w, "get a user")
+			if r.Method == "GET" {
+				fmt.Fprintf(w, "TODO: return a user")
+			} else {
+				w.WriteHeader(405)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]/edit$"); re.MatchString(r.URL.Path) {
-			fmt.Fprintf(w, "edit a user")
+			if r.Method == "GET" {
+				fmt.Fprintf(w, "TODO: return a form for user modification")
+			} else {
+				w.WriteHeader(405)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]/update$"); re.MatchString(r.URL.Path) {
-			fmt.Fprintf(w, "update a user")
+			if r.Method == "PUT" {
+				fmt.Fprintf(w, "TODO: update a user")
+			} else {
+				w.WriteHeader(405)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]/delete$"); re.MatchString(r.URL.Path) {
-			fmt.Fprintf(w, "delete a user")
+			if r.Method == "DELETE" {
+				fmt.Fprintf(w, "TODO: delete a user")
+			} else {
+				w.WriteHeader(405)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
 		} else {
 			w.WriteHeader(404)
 			fmt.Fprintf(w, "Page Not Found")
 		}
 	})
-	/*
-		http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
-			if r.Method == "GET" {
-				// HTTP GET to list users
-				fmt.Fprintf(w, "Got users")
-			} else if r.Method == "POST" {
-				// HTTP POST to create a user
-				fmt.Fprintf(w, "Created a user")
-			} else {
-				w.WriteHeader(405)
-				fmt.Fprintf(w, "Method Not Allowed")
-			}
-		})
 
-		http.HandleFunc("/users/1", func(w http.ResponseWriter, r *http.Request) {
-			// HTTP GET to get a user
-			if r.Method == "GET" {
-				fmt.Fprintf(w, "Got user 1")
-			} else {
-				w.WriteHeader(405)
-				fmt.Fprintf(w, "Method Not Allowed")
-			}
-		})
-
-		http.HandleFunc("/users/new", func(w http.ResponseWriter, r *http.Request) {
-			// HTTP GET to get a form to create a user
-			if r.Method == "GET" {
-				fmt.Fprintf(w, "Form to create a user")
-			} else {
-				w.WriteHeader(405)
-				fmt.Fprintf(w, "Method Not Allowed")
-			}
-		})
-
-		http.HandleFunc("/users/1/edit", func(w http.ResponseWriter, r *http.Request) {
-			// HTTP GET to get a form to update a user
-			if r.Method == "GET" {
-				fmt.Fprintf(w, "Form to update user 1")
-			} else {
-				w.WriteHeader(405)
-				fmt.Fprintf(w, "Method Not Allowed")
-			}
-		})
-
-		http.HandleFunc("/users/1/update", func(w http.ResponseWriter, r *http.Request) {
-			// HTTP GET to get a form to update a user
-			if r.Method == "PUT" {
-				fmt.Fprintf(w, "Updated user 1")
-			} else {
-				w.WriteHeader(405)
-				fmt.Fprintf(w, "Method Not Allowed")
-			}
-		})
-
-		http.HandleFunc("/users/1/delete", func(w http.ResponseWriter, r *http.Request) {
-			// HTTP GET to get a form to update a user
-			if r.Method == "PUT" {
-				fmt.Fprintf(w, "Deleted user 1")
-			} else {
-				w.WriteHeader(405)
-				fmt.Fprintf(w, "Method Not Allowed")
-			}
-		})
-	*/
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
