@@ -7,6 +7,23 @@ import (
 )
 
 func main() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			// HTTP GET to visit welcome page
+			// The "/" pattern matches everything, so we need to check
+			// that we're at the root here.
+			if r.URL.Path != "/" {
+				w.WriteHeader(404)
+				fmt.Fprintf(w, "Page Not Found")
+			} else {
+				fmt.Fprintf(w, "Welcome")
+			}
+		} else {
+			w.WriteHeader(405)
+			fmt.Fprintf(w, "Method Not Allowed")
+		}
+	})
+
 	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			// HTTP GET to list users
