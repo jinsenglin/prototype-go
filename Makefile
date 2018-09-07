@@ -8,6 +8,9 @@ run-cmd-ls:
 run-cmd-httpserv:
 	go run cmd/httpserv/main.go
 
+run-cmd-httpsserv:
+	go run cmd/httpsserv/main.go
+
 run-cmd-proxyserv:
 	go run cmd/proxyserv/main.go
 
