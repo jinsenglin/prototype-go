@@ -22,9 +22,16 @@ type user struct {
 	name string
 }
 
-var Users [9]user
+func _idx(path string) int {
+	re, _ := regexp.Compile("[1-9]")
+	id, _ := strconv.Atoi(re.FindString(path))
+	idx := id - 1
+	return idx
+}
 
 func main() {
+	var users [9]user
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			// HTTP GET to visit welcome page
@@ -50,7 +57,7 @@ func main() {
 			// /users will be redirected to /users/
 
 			if r.Method == http.MethodGet {
-				for _, u := range Users {
+				for _, u := range users {
 					fmt.Fprintln(w, u)
 				}
 			} else if r.Method == http.MethodPost {
@@ -68,10 +75,8 @@ func main() {
 			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodGet {
-				re, _ := regexp.Compile("[1-9]")
-				id, _ := strconv.Atoi(re.FindString(r.URL.Path))
-				idx := id - 1
-				fmt.Fprintf(w, "%v", Users[idx])
+				idx := _idx(r.URL.Path)
+				fmt.Fprintf(w, "%v", users[idx])
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -92,11 +97,9 @@ func main() {
 			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]/delete$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodDelete {
-				re, _ := regexp.Compile("[1-9]")
-				id, _ := strconv.Atoi(re.FindString(r.URL.Path))
-				idx := id - 1
-				Users[idx].id = 0
-				Users[idx].name = ""
+				idx := _idx(r.URL.Path)
+				users[idx].id = 0
+				users[idx].name = ""
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
