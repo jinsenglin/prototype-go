@@ -5,7 +5,6 @@ Additional Resources
 - https://golang.org/doc/articles/wiki/
 - https://gowebexamples.com/http-server/
 - http://legendtkl.com/2016/08/21/go-web-server/
-- https://medium.com/@ScullWM/golang-http-server-for-pro-69034c276355
 */
 
 package main
