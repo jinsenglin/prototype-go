@@ -4,6 +4,7 @@ Additional Resources
 - https://golang.org/pkg/html/template/
 - https://golang.org/doc/articles/wiki/
 - https://gowebexamples.com/http-server/
+- https://studygolang.com/articles/6854
 - http://legendtkl.com/2016/08/21/go-web-server/
 */
 
