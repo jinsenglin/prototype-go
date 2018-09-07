@@ -1,6 +1,7 @@
 /*
 Additional Resources
 - https://golang.org/pkg/net/http/
+- https://golang.org/pkg/html/template/
 - https://golang.org/doc/articles/wiki/
 - https://gowebexamples.com/http-server/
 - http://legendtkl.com/2016/08/21/go-web-server/
@@ -37,6 +38,7 @@ func main() {
 			// HTTP GET to visit welcome page
 			// The "/" pattern matches everything, so we need to check
 			// that we're at the root here.
+
 			if r.URL.Path != "/" {
 				w.WriteHeader(http.StatusNotFound)
 				fmt.Fprintf(w, "Page Not Found")
@@ -78,7 +80,11 @@ func main() {
 			}
 		} else if r.URL.Path == "/users/new" {
 			if r.Method == http.MethodGet {
-				fmt.Fprintf(w, "TODO: return a form for user creation")
+				// e.g.,
+				// curl -v -X GET -L http://localhost:8080/users/new
+
+				w.Header().Set("Content-Type", "text/html; charset=utf-8")
+				fmt.Fprintf(w, "<form>name: <input /><button>Create</button></form>")
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -96,7 +102,12 @@ func main() {
 			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]/edit$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodGet {
-				fmt.Fprintf(w, "TODO: return a form for user modification")
+				// e.g.,
+				// curl -v -X GET -L http://localhost:8080/users/1/edit
+
+				idx := _idx(r.URL.Path)
+				w.Header().Set("Content-Type", "text/html; charset=utf-8")
+				fmt.Fprintf(w, "<form><div>id: %v</div>name: <input value='%v'/><button>Update</button></form>", users[idx].id, users[idx].name)
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
