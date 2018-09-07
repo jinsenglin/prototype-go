@@ -41,7 +41,7 @@ func worker(id int, conns <-chan net.Conn) {
 }
 
 func main() {
-	conns := make(chan net.Conn)
+	conns := make(chan net.Conn) // TODO: refactor with a Connection Queue.
 	for w := 1; w < 4; w++ {
 		go worker(w, conns)
 	}
