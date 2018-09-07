@@ -57,11 +57,21 @@ func main() {
 			// /users will be redirected to /users/
 
 			if r.Method == http.MethodGet {
+				// e.g.,
+				// curl -v -X GET -L http://localhost:8080/users
+				// curl -v -X GET -L http://localhost:8080/users/
+
 				for _, u := range users {
 					fmt.Fprintln(w, u)
 				}
 			} else if r.Method == http.MethodPost {
-				fmt.Fprintf(w, "TODO: create a user")
+				// e.g.,
+				// curl -v -X POST -L http://localhost:8080/users/ -F 'id=1' -F 'name=cclin'
+
+				id, _ := strconv.Atoi(r.FormValue("id"))
+				idx := id - 1
+				users[idx].id = id
+				users[idx].name = r.FormValue("name")
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -75,6 +85,9 @@ func main() {
 			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodGet {
+				// e.g.,
+				// curl -v -X GET -L http://localhost:8080/users/1
+
 				idx := _idx(r.URL.Path)
 				fmt.Fprintf(w, "%v", users[idx])
 			} else {
@@ -90,13 +103,20 @@ func main() {
 			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]/update$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodPut {
-				fmt.Fprintf(w, "TODO: update a user")
+				// e.g.,
+				// curl -v -X PUT -L http://localhost:8080/users/1/update -F 'name=cc lin'
+
+				idx := _idx(r.URL.Path)
+				users[idx].name = r.FormValue("name")
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
 			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]/delete$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodDelete {
+				// e.g.,
+				// curl -v -X DELETE -L http://localhost:8080/users/1/delete
+
 				idx := _idx(r.URL.Path)
 				users[idx].id = 0
 				users[idx].name = ""
