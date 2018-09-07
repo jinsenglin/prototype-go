@@ -31,7 +31,21 @@ func handleConn(from net.Conn) {
 	}
 }
 
+func worker(id int, conns <-chan net.Conn) {
+	log.Printf("worker %v started", id)
+	for conn := range conns {
+		log.Printf("worker %v got a job", id)
+		handleConn(conn)
+		log.Printf("worker %v done a job", id)
+	}
+}
+
 func main() {
+	conns := make(chan net.Conn)
+	for w := 1; w < 4; w++ {
+		go worker(w, conns)
+	}
+
 	listener, err := net.Listen("tcp", ":8081")
 	if err != nil {
 		log.Fatal(err)
@@ -42,7 +56,7 @@ func main() {
 		if err != nil {
 			log.Printf("%v", err)
 		} else {
-			go handleConn(conn) // TODO: refactor with a Goroutine Pool. See proxyserv2
+			conns <- conn
 		}
 	}
 }
