@@ -1,3 +1,12 @@
+/*
+Additional Resources
+- https://golang.org/pkg/net/http/
+- https://golang.org/doc/articles/wiki/
+- https://gowebexamples.com/http-server/
+- http://legendtkl.com/2016/08/21/go-web-server/
+- https://medium.com/@ScullWM/golang-http-server-for-pro-69034c276355
+*/
+
 package main
 
 import (
@@ -5,7 +14,15 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 )
+
+type user struct {
+	id   int
+	name string
+}
+
+var Users [9]user
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +50,9 @@ func main() {
 			// /users will be redirected to /users/
 
 			if r.Method == http.MethodGet {
-				fmt.Fprintf(w, "TODO: return a list of users")
+				for _, u := range Users {
+					fmt.Fprintln(w, u)
+				}
 			} else if r.Method == http.MethodPost {
 				fmt.Fprintf(w, "TODO: create a user")
 			} else {
@@ -49,7 +68,10 @@ func main() {
 			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodGet {
-				fmt.Fprintf(w, "TODO: return a user")
+				re, _ := regexp.Compile("[1-9]")
+				id, _ := strconv.Atoi(re.FindString(r.URL.Path))
+				idx := id - 1
+				fmt.Fprintf(w, "%v", Users[idx])
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -70,7 +92,11 @@ func main() {
 			}
 		} else if re, _ := regexp.Compile("^/users/[1-9]/delete$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodDelete {
-				fmt.Fprintf(w, "TODO: delete a user")
+				re, _ := regexp.Compile("[1-9]")
+				id, _ := strconv.Atoi(re.FindString(r.URL.Path))
+				idx := id - 1
+				Users[idx].id = 0
+				Users[idx].name = ""
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
