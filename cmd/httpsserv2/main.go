@@ -63,7 +63,7 @@ func main() {
 			if r.Method == http.MethodGet {
 				// e.g.,
 				// curl -v -X GET -L -k --cert pki/client.cert.pem --key pki/client.key.pem --cacert pki/ca.cert.pem https://localhost.localdomain:8443/users
-				// curl -v -X GET -L -k https://localhost:8443/users/
+				// curl -v -X GET -L -k --cert pki/client.cert.pem --key pki/client.key.pem --cacert pki/ca.cert.pem https://localhost:8443/users/
 
 				for _, u := range users {
 					fmt.Fprintln(w, u)
