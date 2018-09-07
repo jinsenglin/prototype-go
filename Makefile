@@ -16,6 +16,3 @@ run-cmd-proxyserv2:
 
 run-cmd-proxyserv3:
 	go run cmd/proxyserv3/main.go
-
-run-cmd-sqlclient:
-	go run cmd/sqlclient/main.go
