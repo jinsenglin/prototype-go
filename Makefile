@@ -11,6 +11,9 @@ run-cmd-httpserv:
 run-cmd-httpsserv:
 	go run cmd/httpsserv/main.go
 
+run-cmd-httpsserv2:
+	go run cmd/httpsserv2/main.go
+
 run-cmd-proxyserv:
 	go run cmd/proxyserv/main.go
 

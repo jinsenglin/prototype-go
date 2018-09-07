@@ -58,7 +58,7 @@ func main() {
 
 			if r.Method == http.MethodGet {
 				// e.g.,
-				// curl -v -X GET -L -k https://localhost:8443/users
+				// curl -v -X GET -L -k --cert client.crt --key client.key https://localhost:8443/users
 				// curl -v -X GET -L -k https://localhost:8443/users/
 
 				for _, u := range users {
@@ -66,7 +66,7 @@ func main() {
 				}
 			} else if r.Method == http.MethodPost {
 				// e.g.,
-				// curl -v -X POST -L -k https://localhost:8443/users/ -F 'id=1' -F 'name=cclin'
+				// curl -v -X POST -L -k --cert client.crt --key client.key https://localhost:8443/users/ -F 'id=1' -F 'name=cclin'
 
 				id, _ := strconv.Atoi(r.FormValue("id"))
 				idx := id - 1
@@ -79,7 +79,7 @@ func main() {
 		} else if r.URL.Path == "/users/new" {
 			if r.Method == http.MethodGet {
 				// e.g.,
-				// curl -v -X GET -L -k https://localhost:8443/users/new
+				// curl -v -X GET -L -k --cert client.crt --key client.key https://localhost:8443/users/new
 
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
 				fmt.Fprintf(w, "<form>name: <input /><button>Create</button></form>")
@@ -90,7 +90,7 @@ func main() {
 		} else if re, _ := regexp.Compile("^/users/[1-9]$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodGet {
 				// e.g.,
-				// curl -v -X GET -L -k https://localhost:8443/users/1
+				// curl -v -X GET -L -k --cert client.crt --key client.key https://localhost:8443/users/1
 
 				idx := _idx(r.URL.Path)
 				fmt.Fprintf(w, "%v", users[idx])
@@ -101,7 +101,7 @@ func main() {
 		} else if re, _ := regexp.Compile("^/users/[1-9]/edit$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodGet {
 				// e.g.,
-				// curl -v -X GET -L -k https://localhost:8443/users/1/edit
+				// curl -v -X GET -L -k --cert client.crt --key client.key https://localhost:8443/users/1/edit
 
 				idx := _idx(r.URL.Path)
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -113,7 +113,7 @@ func main() {
 		} else if re, _ := regexp.Compile("^/users/[1-9]/update$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodPut {
 				// e.g.,
-				// curl -v -X PUT -L -k https://localhost:8443/users/1/update -F 'name=cc lin'
+				// curl -v -X PUT -L -k --cert client.crt --key client.key https://localhost:8443/users/1/update -F 'name=cc lin'
 
 				idx := _idx(r.URL.Path)
 				users[idx].name = r.FormValue("name")
@@ -124,7 +124,7 @@ func main() {
 		} else if re, _ := regexp.Compile("^/users/[1-9]/delete$"); re.MatchString(r.URL.Path) {
 			if r.Method == http.MethodDelete {
 				// e.g.,
-				// curl -v -X DELETE -L -k https://localhost:8443/users/1/delete
+				// curl -v -X DELETE -L -k --cert client.crt --key client.key https://localhost:8443/users/1/delete
 
 				idx := _idx(r.URL.Path)
 				users[idx].id = 0
@@ -139,5 +139,5 @@ func main() {
 		}
 	})
 
-	log.Fatal(http.ListenAndServeTLS(":8443", "server.crt", "server.key", nil)) // TODO: refactor with TLS mutual authN. See httpsserv2
+	log.Fatal(http.ListenAndServeTLS(":8443", "server.crt", "server.key", nil)) // TODO: refactor with TLS mutual authN.
 }
