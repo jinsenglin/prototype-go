@@ -1,3 +1,8 @@
+/*
+Addiontional Resources
+- https://gist.github.com/spikebike/2232102
+*/
+
 package main
 
 import (
@@ -7,7 +12,7 @@ import (
 )
 
 func handleConn(from net.Conn) {
-	to, err := net.Dial("tcp", ":8080") // TODO: refactor with a TLS Connection. See proxyserv4
+	to, err := net.Dial("tcp", ":8443") // TODO: refactor with a TLS Connection.
 	if err != nil {
 		log.Printf("%v", err)
 	} else {
