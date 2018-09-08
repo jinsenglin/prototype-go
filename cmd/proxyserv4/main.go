@@ -6,33 +6,38 @@ Addiontional Resources
 package main
 
 import (
+	"crypto/tls"
 	"io"
 	"log"
 	"net"
 )
 
 func handleConn(from net.Conn) {
-	to, err := net.Dial("tcp", ":8443") // TODO: refactor with a TLS Connection.
-	if err != nil {
-		log.Printf("%v", err)
+	if cert, err := tls.LoadX509KeyPair("pki/client.cert.pem", "pki/client.key.pem"); err != nil {
+		log.Fatalf("%v", err)
 	} else {
-		done := make(chan struct{})
-		go func() {
-			defer from.Close()
-			defer to.Close()
-			io.Copy(from, to)
-			done <- struct{}{}
-		}()
+		config := tls.Config{Certificates: []tls.Certificate{cert}, InsecureSkipVerify: true} // TODO: refactor with a CA file.
+		if to, err := tls.Dial("tcp", ":8443", &config); err != nil {
+			log.Printf("%v", err)
+		} else {
+			done := make(chan struct{})
+			go func() {
+				defer from.Close()
+				defer to.Close()
+				io.Copy(from, to)
+				done <- struct{}{}
+			}()
 
-		go func() {
-			defer from.Close()
-			defer to.Close()
-			io.Copy(to, from)
-			done <- struct{}{}
-		}()
+			go func() {
+				defer from.Close()
+				defer to.Close()
+				io.Copy(to, from)
+				done <- struct{}{}
+			}()
 
-		<-done
-		<-done
+			<-done
+			<-done
+		}
 	}
 }
 
