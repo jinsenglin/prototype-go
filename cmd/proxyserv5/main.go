@@ -47,7 +47,7 @@ func worker(id int, conns <-chan net.Conn) {
 	log.Printf("worker %v started", id)
 	limiter := time.Tick(200 * time.Millisecond)
 	for conn := range conns {
-		<-limiter
+		<-limiter // TODO: refactor with a burst.
 		log.Printf("worker %v got a job", id)
 		handleConn(conn)
 		log.Printf("worker %v done a job", id)
