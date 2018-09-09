@@ -26,6 +26,34 @@ import (
 	"os"
 )
 
+func _os_File_Write(from string, to string) {
+	if fileFrom, err := os.Open(from); err != nil {
+		log.Println(err)
+	} else {
+		defer fileFrom.Close()
+		if fileTo, err := os.Create(to); err != nil {
+			log.Println(err)
+		} else {
+			defer fileTo.Close()
+			block := make([]byte, 1)
+			for {
+				if n, err := fileFrom.Read(block); err != nil && err != io.EOF {
+					log.Fatal(err)
+				} else if 0 == n {
+					if err := fileTo.Sync(); err != nil {
+						log.Println(err)
+					} else {
+						log.Println("copied")
+					}
+					break
+				} else {
+					fileTo.Write(block)
+				}
+			}
+		}
+	}
+}
+
 func _bufio_Write(from string, to string) {
 	if fileFrom, err := os.Open(from); err != nil {
 		log.Println(err)
@@ -99,7 +127,8 @@ func cp(from string, to string) {
 	log.Printf("coping file %v to %v\n", from, to)
 	// _io_Copy(from, to)
 	// _ioutil_WriteFile(from, to)
-	_bufio_Write(from, to)
+	// _bufio_Write(from, to)
+	_os_File_Write(from, to)
 }
 
 func main() {
