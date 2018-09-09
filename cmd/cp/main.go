@@ -6,13 +6,21 @@ Additional Resources
 - https://golang.org/pkg/bufio/#Writer.WriteString
 - https://golang.org/pkg/os/#File.Write
 - https://golang.org/pkg/os/#File.WriteString
+
+Rate Limit
 - https://godoc.org/golang.org/x/time/rate
 - https://studygolang.com/articles/10148
 - https://github.com/fujiwara/shapeio
+
+Compare 4 W/R Methods
 - https://gobyexample.com/writing-files
 - https://segmentfault.com/a/1190000011680507
-- https://gist.github.com/ebraminio/576fdfdff425bf3335b51a191a65dbdb
-- https://astaxie.gitbooks.io/build-web-application-with-golang/en/04.5.html
+
+2 HTTP File Transfer Methods
+- r.Body https://gist.github.com/ebraminio/576fdfdff425bf3335b51a191a65dbdb
+- r.FormFile https://astaxie.gitbooks.io/build-web-application-with-golang/en/04.5.html
+
+TCP File Transfer
 - http://mrwaggel.be/post/golang-transfer-a-file-over-a-tcp-socket/
 */
 
