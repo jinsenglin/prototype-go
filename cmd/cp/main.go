@@ -11,6 +11,7 @@ Rate Limit
 - https://godoc.org/golang.org/x/time/rate
 - https://studygolang.com/articles/10148
 - https://github.com/fujiwara/shapeio
+- https://medium.com/@KevinHoffman/rate-limiting-service-calls-in-go-3771c6b7c146
 
 Compare 4 W/R Methods
 - https://gobyexample.com/writing-files
