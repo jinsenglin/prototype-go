@@ -20,6 +20,7 @@ func ls(path string) {
 	if file, err := os.Open(path); err != nil {
 		log.Println(err)
 	} else {
+		defer file.Close()
 		if info, err := file.Readdir(-1); err != nil {
 			log.Println(err)
 		} else {
@@ -27,7 +28,6 @@ func ls(path string) {
 				fmt.Println(fi.Name())
 			}
 		}
-		file.Close()
 	}
 }
 
