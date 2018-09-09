@@ -7,9 +7,9 @@ package route
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"regexp"
 	"strconv"
 )
@@ -57,13 +57,13 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X POST -L http://localhost:8080/files/ -H 'Content-Type: application/octet-stream' --data-binary '@README.md'
 
-				if file, err := os.Create("/tmp/result"); err != nil { // TODO: replace with a random filename
+				if file, err := ioutil.TempFile("/tmp", "upload-"); err != nil {
 					log.Println(err)
 				} else {
 					if n, err := io.Copy(file, r.Body); err != nil {
 						log.Println(err)
 					} else {
-						log.Printf("%d bytes are recieved.\n", n)
+						log.Printf("%d bytes are recieved. Saved as %s\n", n, file.Name())
 						fmt.Fprintf(w, "%d bytes are recieved.\n", n)
 					}
 				}
