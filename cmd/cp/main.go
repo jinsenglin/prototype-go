@@ -19,11 +19,42 @@ Additional Resources
 package main
 
 import (
+	"bufio"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 )
+
+func _bufio_Write(from string, to string) {
+	if fileFrom, err := os.Open(from); err != nil {
+		log.Println(err)
+	} else {
+		defer fileFrom.Close()
+		if fileTo, err := os.Create(to); err != nil {
+			log.Println(err)
+		} else {
+			defer fileTo.Close()
+			fileReader := bufio.NewReader(fileFrom)
+			fileWriter := bufio.NewWriter(fileTo)
+			block := make([]byte, 1)
+			for {
+				if n, err := fileReader.Read(block); err != nil && err != io.EOF {
+					log.Fatal(err)
+				} else if 0 == n {
+					if err := fileWriter.Flush(); err != nil {
+						log.Println(err)
+					} else {
+						log.Println("copied")
+					}
+					break
+				} else {
+					fileWriter.Write(block)
+				}
+			}
+		}
+	}
+}
 
 func _ioutil_WriteFile(from string, to string) {
 	if fileFrom, err := os.Open(from); err != nil {
@@ -67,7 +98,8 @@ func _io_Copy(from string, to string) {
 func cp(from string, to string) {
 	log.Printf("coping file %v to %v\n", from, to)
 	// _io_Copy(from, to)
-	_ioutil_WriteFile(from, to)
+	// _ioutil_WriteFile(from, to)
+	_bufio_Write(from, to)
 }
 
 func main() {
