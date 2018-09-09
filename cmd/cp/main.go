@@ -20,9 +20,27 @@ package main
 
 import (
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 )
+
+func _ioutil_WriteFile(from string, to string) {
+	if fileFrom, err := os.Open(from); err != nil {
+		log.Println(err)
+	} else {
+		defer fileFrom.Close()
+		if data, err := ioutil.ReadFile(from); err != nil {
+			log.Println(err)
+		} else {
+			if err := ioutil.WriteFile(to, data, 0644); err != nil {
+				log.Println(err)
+			} else {
+				log.Println("copied")
+			}
+		}
+	}
+}
 
 func _io_Copy(from string, to string) {
 	if fileFrom, err := os.Open(from); err != nil {
@@ -36,8 +54,11 @@ func _io_Copy(from string, to string) {
 			if _, err := io.Copy(fileTo, fileFrom); err != nil {
 				log.Println(err)
 			} else {
-				fileFrom.Sync()
-				log.Println("copied")
+				if err := fileFrom.Sync(); err != nil {
+					log.Println(err)
+				} else {
+					log.Println("copied")
+				}
 			}
 		}
 	}
@@ -45,7 +66,8 @@ func _io_Copy(from string, to string) {
 
 func cp(from string, to string) {
 	log.Printf("coping file %v to %v\n", from, to)
-	_io_Copy(from, to)
+	// _io_Copy(from, to)
+	_ioutil_WriteFile(from, to)
 }
 
 func main() {
