@@ -19,20 +19,33 @@ Additional Resources
 package main
 
 import (
-	"fmt"
+	"io"
 	"log"
 	"os"
 )
 
-func cp(from string, to string) {
-	fmt.Printf("coping file %v to %v\n", from, to)
-
-	if file, err := os.Open(from); err != nil {
+func _io_Copy(from string, to string) {
+	if fileFrom, err := os.Open(from); err != nil {
 		log.Println(err)
 	} else {
-		defer file.Close()
-		// TODO
+		defer fileFrom.Close()
+		if fileTo, err := os.Create(to); err != nil {
+			log.Println(err)
+		} else {
+			defer fileTo.Close()
+			if _, err := io.Copy(fileTo, fileFrom); err != nil {
+				log.Println(err)
+			} else {
+				fileFrom.Sync()
+				log.Println("copied")
+			}
+		}
 	}
+}
+
+func cp(from string, to string) {
+	log.Printf("coping file %v to %v\n", from, to)
+	_io_Copy(from, to)
 }
 
 func main() {
