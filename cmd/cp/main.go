@@ -8,6 +8,7 @@ Additional Resources
 - https://golang.org/pkg/os/#File.WriteString
 
 Rate Limit
+- https://gobyexample.com/rate-limiting
 - https://godoc.org/golang.org/x/time/rate
 - https://studygolang.com/articles/10148
 - https://github.com/fujiwara/shapeio
