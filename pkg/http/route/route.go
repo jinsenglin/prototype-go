@@ -1,8 +1,15 @@
+/*
+Implementations of http file uploader client and server
+See https://gist.github.com/ebraminio/576fdfdff425bf3335b51a191a65dbdb
+*/
 package route
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 )
@@ -41,6 +48,32 @@ func RegisterRoutes() {
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			fmt.Fprintf(w, "Method Not Allowed")
+		}
+	})
+
+	http.HandleFunc("/files/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/files/" {
+			if r.Method == http.MethodPost {
+				// e.g.,
+				// curl -v -X POST -L http://localhost:8080/files/ -H 'Content-Type: application/octet-stream' --data-binary '@README.md'
+
+				if file, err := os.Create("/tmp/result"); err != nil { // TODO: replace with a random filename
+					log.Println(err)
+				} else {
+					if n, err := io.Copy(file, r.Body); err != nil {
+						log.Println(err)
+					} else {
+						log.Printf("%d bytes are recieved.\n", n)
+						fmt.Fprintf(w, "%d bytes are recieved.\n", n)
+					}
+				}
+			} else {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, "Page Not Found")
 		}
 	})
 
