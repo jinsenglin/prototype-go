@@ -1,6 +1,7 @@
 /*
 Addiontional Resources
 - https://gist.github.com/spikebike/2232102
+- https://gobyexample.com/rate-limiting
 */
 
 package main
@@ -10,6 +11,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"time"
 )
 
 func handleConn(from net.Conn) {
@@ -43,7 +45,9 @@ func handleConn(from net.Conn) {
 
 func worker(id int, conns <-chan net.Conn) {
 	log.Printf("worker %v started", id)
-	for conn := range conns { // TODO: refactor with rate limiting. See proxyserv5
+	limiter := time.Tick(200 * time.Millisecond)
+	for conn := range conns {
+		<-limiter
 		log.Printf("worker %v got a job", id)
 		handleConn(conn)
 		log.Printf("worker %v done a job", id)
