@@ -43,7 +43,7 @@ func _os_File_Write(from string, to string) {
 			log.Println(err)
 		} else {
 			defer fileTo.Close()
-			block := make([]byte, 1)
+			block := make([]byte, 1) // TODO: refactor with larger block for better performance
 			for {
 				if n, err := fileFrom.Read(block); err != nil && err != io.EOF {
 					log.Fatal(err)
@@ -73,7 +73,7 @@ func _bufio_Write(from string, to string) {
 			defer fileTo.Close()
 			fileReader := bufio.NewReader(fileFrom)
 			fileWriter := bufio.NewWriter(fileTo)
-			block := make([]byte, 1)
+			block := make([]byte, 1) // TODO: refactor with larger block for better performance
 			for {
 				if n, err := fileReader.Read(block); err != nil && err != io.EOF {
 					log.Fatal(err)
