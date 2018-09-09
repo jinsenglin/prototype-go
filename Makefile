@@ -5,6 +5,10 @@ run-cmd-ls:
 	go build -o out/ls cmd/ls/*.go
 	./out/ls / /non-exist
 
+run-cmd-cp:
+	go build -o out/cp cmd/cp/*.go
+	./out/cp README.md /tmp/README.md
+
 run-cmd-httpserv:
 	go run cmd/httpserv/main.go
 
