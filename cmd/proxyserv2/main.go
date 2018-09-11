@@ -41,6 +41,7 @@ func worker(id int, conns <-chan net.Conn) {
 }
 
 func main() {
+	log.Println("Try `curl -v -X GET -L http://localhost:8081`")
 	conns := make(chan net.Conn) // TODO: refactor with a Connection Queue. See proxyserv3
 	for w := 1; w < 4; w++ {
 		go worker(w, conns)

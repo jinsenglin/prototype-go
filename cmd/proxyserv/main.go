@@ -32,6 +32,7 @@ func handleConn(from net.Conn) {
 }
 
 func main() {
+	log.Println("Try `curl -v -X GET -L http://localhost:8081`")
 	listener, err := net.Listen("tcp", ":8081")
 	if err != nil {
 		log.Fatal(err)
