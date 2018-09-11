@@ -8,7 +8,9 @@ package main
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"io"
+	"io/ioutil"
 	"log"
 	"net"
 	"time"
@@ -18,27 +20,37 @@ func handleConn(from net.Conn) {
 	if cert, err := tls.LoadX509KeyPair("pki/client.cert.pem", "pki/client.key.pem"); err != nil {
 		log.Fatalf("%v", err)
 	} else {
-		config := tls.Config{Certificates: []tls.Certificate{cert}, InsecureSkipVerify: true}
-		if to, err := tls.Dial("tcp", ":8443", &config); err != nil {
-			log.Printf("%v", err)
+		if ca, err := ioutil.ReadFile("pki/ca.cert.pem"); err != nil {
+			log.Fatalf("%v", err)
 		} else {
-			done := make(chan struct{})
-			go func() {
-				defer from.Close()
-				defer to.Close()
-				io.Copy(from, to)
-				done <- struct{}{}
-			}()
+			roots := x509.NewCertPool()
+			roots.AppendCertsFromPEM(ca)
 
-			go func() {
-				defer from.Close()
-				defer to.Close()
-				io.Copy(to, from)
-				done <- struct{}{}
-			}()
+			config := tls.Config{
+				Certificates: []tls.Certificate{cert},
+				RootCAs:      roots}
 
-			<-done
-			<-done
+			if to, err := tls.Dial("tcp", "localhost.localdomain:8443", &config); err != nil {
+				log.Printf("%v", err)
+			} else {
+				done := make(chan struct{})
+				go func() {
+					defer from.Close()
+					defer to.Close()
+					io.Copy(from, to)
+					done <- struct{}{}
+				}()
+
+				go func() {
+					defer from.Close()
+					defer to.Close()
+					io.Copy(to, from)
+					done <- struct{}{}
+				}()
+
+				<-done
+				<-done
+			}
 		}
 	}
 }
