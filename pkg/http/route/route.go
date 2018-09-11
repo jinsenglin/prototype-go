@@ -7,6 +7,11 @@ See https://flaviocopes.com/go-copying-structs/
 
 Convert an array to a slice
 See https://stackoverflow.com/questions/28886616/convert-array-to-slice-in-go
+
+Deep copy a struct instance
+- https://gobyexample.com/json
+- https://blog.golang.org/json-and-go
+- https://www.jianshu.com/p/f1cdb1bc1b74
 */
 package route
 
