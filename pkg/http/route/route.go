@@ -1,6 +1,12 @@
 /*
 Implementations of http file uploader client and server
 See https://gist.github.com/ebraminio/576fdfdff425bf3335b51a191a65dbdb
+
+Copy a struct instance
+See https://flaviocopes.com/go-copying-structs/
+
+Convert an array to a slice
+See https://stackoverflow.com/questions/28886616/convert-array-to-slice-in-go
 */
 package route
 
@@ -12,11 +18,53 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"sync"
 )
 
 type user struct {
 	id   int
 	name string
+}
+
+type users struct {
+	items [9]user
+	mux   sync.Mutex
+}
+
+func (data *users) list() []user {
+	data.mux.Lock()
+	us := data.items[:]
+	data.mux.Unlock()
+
+	return us
+}
+
+func (data *users) get(idx int) user {
+	data.mux.Lock()
+	u := data.items[idx]
+	data.mux.Unlock()
+
+	return u
+}
+
+func (data *users) create(idx int, id int, name string) {
+	data.mux.Lock()
+	data.items[idx].id = id
+	data.items[idx].name = name
+	data.mux.Unlock()
+}
+
+func (data *users) update(idx int, name string) {
+	data.mux.Lock()
+	data.items[idx].name = name
+	data.mux.Unlock()
+}
+
+func (data *users) delete(idx int) {
+	data.mux.Lock()
+	data.items[idx].id = 0
+	data.items[idx].name = ""
+	data.mux.Unlock()
 }
 
 func _idx(path string) int {
@@ -26,7 +74,7 @@ func _idx(path string) int {
 	return idx
 }
 
-var users [9]user
+var data = users{}
 
 func RegisterRoutes() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +137,7 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080/users
 				// curl -v -X GET -L http://localhost:8080/users/
 
-				for _, u := range users {
+				for _, u := range data.list() {
 					fmt.Fprintln(w, u)
 				}
 			} else if r.Method == http.MethodPost {
@@ -98,8 +146,7 @@ func RegisterRoutes() {
 
 				id, _ := strconv.Atoi(r.FormValue("id"))
 				idx := id - 1
-				users[idx].id = id
-				users[idx].name = r.FormValue("name")
+				data.create(idx, id, r.FormValue("name"))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -121,7 +168,7 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080/users/1
 
 				idx := _idx(r.URL.Path)
-				fmt.Fprintf(w, "%v", users[idx])
+				fmt.Fprintf(w, "%v", data.get(idx))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -132,8 +179,9 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080/users/1/edit
 
 				idx := _idx(r.URL.Path)
+				u := data.get(idx)
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
-				fmt.Fprintf(w, "<form><div>id: %v</div>name: <input value='%v'/><button>Update</button></form>", users[idx].id, users[idx].name)
+				fmt.Fprintf(w, "<form><div>id: %v</div>name: <input value='%v'/><button>Update</button></form>", u.id, u.name)
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -144,7 +192,7 @@ func RegisterRoutes() {
 				// curl -v -X PUT -L http://localhost:8080/users/1/update -F 'name=cc lin'
 
 				idx := _idx(r.URL.Path)
-				users[idx].name = r.FormValue("name")
+				data.update(idx, r.FormValue("name"))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -155,8 +203,7 @@ func RegisterRoutes() {
 				// curl -v -X DELETE -L http://localhost:8080/users/1/delete
 
 				idx := _idx(r.URL.Path)
-				users[idx].id = 0
-				users[idx].name = ""
+				data.delete(idx)
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
