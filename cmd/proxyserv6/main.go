@@ -18,7 +18,7 @@ func handleConn(from net.Conn) {
 	if cert, err := tls.LoadX509KeyPair("pki/client.cert.pem", "pki/client.key.pem"); err != nil {
 		log.Fatalf("%v", err)
 	} else {
-		config := tls.Config{Certificates: []tls.Certificate{cert}, InsecureSkipVerify: true} // TODO: refactor with a CA file. See proxyserv6
+		config := tls.Config{Certificates: []tls.Certificate{cert}, InsecureSkipVerify: true}
 		if to, err := tls.Dial("tcp", ":8443", &config); err != nil {
 			log.Printf("%v", err)
 		} else {

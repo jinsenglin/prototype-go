@@ -32,3 +32,6 @@ run-cmd-proxyserv4:
 
 run-cmd-proxyserv5:
 	go run cmd/proxyserv5/main.go
+
+run-cmd-proxyserv6:
+	go run cmd/proxyserv6/main.go
