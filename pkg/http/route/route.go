@@ -11,6 +11,7 @@ See https://stackoverflow.com/questions/28886616/convert-array-to-slice-in-go
 package route
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -22,8 +23,16 @@ import (
 )
 
 type user struct {
-	id   int
-	name string
+	Id   int
+	Name string
+	Lang []string
+}
+
+func (u1 *user) copy() (u2 user) {
+	// deep copy
+	b, _ := json.Marshal(u1)
+	json.Unmarshal(b, &u2)
+	return u2
 }
 
 type users struct {
@@ -49,21 +58,21 @@ func (data *users) get(idx int) user {
 
 func (data *users) create(idx int, id int, name string) {
 	data.mux.Lock()
-	data.items[idx].id = id
-	data.items[idx].name = name
+	data.items[idx].Id = id
+	data.items[idx].Name = name
 	data.mux.Unlock()
 }
 
 func (data *users) update(idx int, name string) {
 	data.mux.Lock()
-	data.items[idx].name = name
+	data.items[idx].Name = name
 	data.mux.Unlock()
 }
 
 func (data *users) delete(idx int) {
 	data.mux.Lock()
-	data.items[idx].id = 0
-	data.items[idx].name = ""
+	data.items[idx].Id = 0
+	data.items[idx].Name = ""
 	data.mux.Unlock()
 }
 
@@ -181,7 +190,7 @@ func RegisterRoutes() {
 				idx := _idx(r.URL.Path)
 				u := data.get(idx)
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
-				fmt.Fprintf(w, "<form><div>id: %v</div>name: <input value='%v'/><button>Update</button></form>", u.id, u.name)
+				fmt.Fprintf(w, "<form><div>id: %v</div>name: <input value='%v'/><button>Update</button></form>", u.Id, u.Name)
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
