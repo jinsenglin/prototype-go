@@ -12,6 +12,9 @@ Deep copy a struct instance
 - https://gobyexample.com/json
 - https://blog.golang.org/json-and-go
 - https://www.jianshu.com/p/f1cdb1bc1b74
+
+With context
+See https://blog.golang.org/context
 */
 package route
 
