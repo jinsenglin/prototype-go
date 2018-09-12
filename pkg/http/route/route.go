@@ -16,6 +16,7 @@ Deep copy a struct instance
 package route
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -51,6 +52,9 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080
 				// curl -v -X GET -L http://localhost:8080/
 
+				_, cancelCtx := context.WithCancel(context.Background())
+				defer cancelCtx()
+
 				fmt.Fprintf(w, "Welcome")
 			}
 		} else {
@@ -64,6 +68,9 @@ func RegisterRoutes() {
 			if r.Method == http.MethodPost {
 				// e.g.,
 				// curl -v -X POST -L http://localhost:8080/files/ -H 'Content-Type: application/octet-stream' --data-binary '@README.md'
+
+				_, cancelCtx := context.WithCancel(context.Background())
+				defer cancelCtx()
 
 				if file, err := ioutil.TempFile("/tmp", "upload-"); err != nil {
 					log.Println(err)
@@ -97,12 +104,18 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080/users
 				// curl -v -X GET -L http://localhost:8080/users/
 
+				_, cancelCtx := context.WithCancel(context.Background())
+				defer cancelCtx()
+
 				for _, u := range data.List() {
 					fmt.Fprintln(w, u)
 				}
 			} else if r.Method == http.MethodPost {
 				// e.g.,
 				// curl -v -X POST -L http://localhost:8080/users/ -F 'id=1' -F 'name=cclin'
+
+				_, cancelCtx := context.WithCancel(context.Background())
+				defer cancelCtx()
 
 				id, _ := strconv.Atoi(r.FormValue("id"))
 				idx := id - 1
@@ -116,6 +129,9 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X GET -L http://localhost:8080/users/new
 
+				_, cancelCtx := context.WithCancel(context.Background())
+				defer cancelCtx()
+
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
 				fmt.Fprintf(w, "<form>name: <input /><button>Create</button></form>")
 			} else {
@@ -127,6 +143,9 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X GET -L http://localhost:8080/users/1
 
+				_, cancelCtx := context.WithCancel(context.Background())
+				defer cancelCtx()
+
 				idx := _idx(r.URL.Path)
 				fmt.Fprintf(w, "%v", data.Get(idx))
 			} else {
@@ -137,6 +156,9 @@ func RegisterRoutes() {
 			if r.Method == http.MethodGet {
 				// e.g.,
 				// curl -v -X GET -L http://localhost:8080/users/1/edit
+
+				_, cancelCtx := context.WithCancel(context.Background())
+				defer cancelCtx()
 
 				idx := _idx(r.URL.Path)
 				u := data.Get(idx)
@@ -151,6 +173,9 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X PUT -L http://localhost:8080/users/1/update -F 'name=cc lin'
 
+				_, cancelCtx := context.WithCancel(context.Background())
+				defer cancelCtx()
+
 				idx := _idx(r.URL.Path)
 				data.Update(idx, r.FormValue("name"))
 			} else {
@@ -161,6 +186,9 @@ func RegisterRoutes() {
 			if r.Method == http.MethodDelete {
 				// e.g.,
 				// curl -v -X DELETE -L http://localhost:8080/users/1/delete
+
+				_, cancelCtx := context.WithCancel(context.Background())
+				defer cancelCtx()
 
 				idx := _idx(r.URL.Path)
 				data.Delete(idx)
