@@ -1,6 +1,10 @@
 package util
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/jinsenglin/prototype-go/pkg/model"
+)
 
 func CopyIntSlice(src []int) []int {
 	dst := make([]int, len(src))
@@ -18,7 +22,15 @@ func CopyStringIntMap(src map[string]int) map[string]int {
 
 func CopyStruct(src interface{}) interface{} {
 	b, _ := json.Marshal(src)
-	var dst interface{} // TODO refactor with reflection
-	json.Unmarshal(b, &dst)
-	return dst
+
+	switch src.(type) {
+	case model.User:
+		var dst model.User
+		json.Unmarshal(b, &dst)
+		return dst
+	default:
+		var dst map[string]interface{}
+		json.Unmarshal(b, &dst)
+		return dst
+	}
 }
