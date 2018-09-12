@@ -18,7 +18,7 @@ func CopyStringIntMap(src map[string]int) map[string]int {
 
 func CopyStruct(src interface{}) interface{} {
 	b, _ := json.Marshal(src)
-	var dst interface{}
+	var dst interface{} // TODO refactor with reflection
 	json.Unmarshal(b, &dst)
 	return dst
 }
