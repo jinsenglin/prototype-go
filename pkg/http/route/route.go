@@ -16,7 +16,6 @@ Deep copy a struct instance
 package route
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -24,62 +23,9 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
-	"sync"
+
+	"github.com/jinsenglin/prototype-go/pkg/model"
 )
-
-type user struct {
-	Id   int
-	Name string
-	Lang []string
-}
-
-func (u1 *user) copy() (u2 user) {
-	// deep copy
-	b, _ := json.Marshal(u1)
-	json.Unmarshal(b, &u2)
-	return u2
-}
-
-type users struct {
-	items [9]user
-	mux   sync.Mutex
-}
-
-func (data *users) list() []user {
-	data.mux.Lock()
-	us := data.items[:]
-	data.mux.Unlock()
-
-	return us
-}
-
-func (data *users) get(idx int) user {
-	data.mux.Lock()
-	u := data.items[idx]
-	data.mux.Unlock()
-
-	return u
-}
-
-func (data *users) create(idx int, id int, name string) {
-	data.mux.Lock()
-	data.items[idx].Id = id
-	data.items[idx].Name = name
-	data.mux.Unlock()
-}
-
-func (data *users) update(idx int, name string) {
-	data.mux.Lock()
-	data.items[idx].Name = name
-	data.mux.Unlock()
-}
-
-func (data *users) delete(idx int) {
-	data.mux.Lock()
-	data.items[idx].Id = 0
-	data.items[idx].Name = ""
-	data.mux.Unlock()
-}
 
 func _idx(path string) int {
 	re, _ := regexp.Compile("[1-9]")
@@ -88,7 +34,7 @@ func _idx(path string) int {
 	return idx
 }
 
-var data = users{}
+var data = model.Users{}
 
 func RegisterRoutes() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -151,7 +97,7 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080/users
 				// curl -v -X GET -L http://localhost:8080/users/
 
-				for _, u := range data.list() {
+				for _, u := range data.List() {
 					fmt.Fprintln(w, u)
 				}
 			} else if r.Method == http.MethodPost {
@@ -160,7 +106,7 @@ func RegisterRoutes() {
 
 				id, _ := strconv.Atoi(r.FormValue("id"))
 				idx := id - 1
-				data.create(idx, id, r.FormValue("name"))
+				data.Create(idx, id, r.FormValue("name"))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -182,7 +128,7 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080/users/1
 
 				idx := _idx(r.URL.Path)
-				fmt.Fprintf(w, "%v", data.get(idx))
+				fmt.Fprintf(w, "%v", data.Get(idx))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -193,7 +139,7 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080/users/1/edit
 
 				idx := _idx(r.URL.Path)
-				u := data.get(idx)
+				u := data.Get(idx)
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
 				fmt.Fprintf(w, "<form><div>id: %v</div>name: <input value='%v'/><button>Update</button></form>", u.Id, u.Name)
 			} else {
@@ -206,7 +152,7 @@ func RegisterRoutes() {
 				// curl -v -X PUT -L http://localhost:8080/users/1/update -F 'name=cc lin'
 
 				idx := _idx(r.URL.Path)
-				data.update(idx, r.FormValue("name"))
+				data.Update(idx, r.FormValue("name"))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
@@ -217,7 +163,7 @@ func RegisterRoutes() {
 				// curl -v -X DELETE -L http://localhost:8080/users/1/delete
 
 				idx := _idx(r.URL.Path)
-				data.delete(idx)
+				data.Delete(idx)
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
 				fmt.Fprintf(w, "Method Not Allowed")
