@@ -67,6 +67,8 @@ func RegisterRoutes() {
 
 	http.HandleFunc("/files/", middleware.Timed(handler.FilesAPIHandler))
 
+	http.Handle("/dummy/", middleware.WithSession(http.HandlerFunc(handler.DummyHandler)))
+
 	http.HandleFunc("/users/", func(w http.ResponseWriter, r *http.Request) {
 		// The "/users/" pattern matches everything prefixed, so we need to check
 		// that we're at the ? here.
