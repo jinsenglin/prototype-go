@@ -65,6 +65,14 @@ func RegisterRoutes() {
 		}
 	})
 
+	http.HandleFunc("/ws/", func(w http.ResponseWriter, r *http.Request) {
+		// TODO websocket
+	})
+
+	http.HandleFunc("/h2/", func(w http.ResponseWriter, r *http.Request) {
+		// TODO http/2 server push
+	})
+
 	http.HandleFunc("/chats/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/chats/new" {
 			if r.Method == http.MethodGet {
