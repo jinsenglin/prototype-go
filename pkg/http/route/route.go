@@ -21,14 +21,13 @@ package route
 import (
 	"context"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"regexp"
 	"strconv"
 
 	"github.com/jinsenglin/prototype-go/pkg/http/context"
+	"github.com/jinsenglin/prototype-go/pkg/http/handler"
+	"github.com/jinsenglin/prototype-go/pkg/http/middleware"
 	"github.com/jinsenglin/prototype-go/pkg/model"
 )
 
@@ -68,34 +67,7 @@ func RegisterRoutes() {
 		}
 	})
 
-	http.HandleFunc("/files/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/files/" {
-			if r.Method == http.MethodPost {
-				// e.g.,
-				// curl -v -X POST -L http://localhost:8080/files/ -H 'Content-Type: application/octet-stream' --data-binary '@README.md'
-
-				_, cancelCtx := context.WithCancel(context.Background())
-				defer cancelCtx()
-
-				if file, err := ioutil.TempFile("/tmp", "upload-"); err != nil {
-					log.Println(err)
-				} else {
-					if n, err := io.Copy(file, r.Body); err != nil {
-						log.Println(err)
-					} else {
-						log.Printf("%d bytes are recieved. Saved as %s\n", n, file.Name())
-						fmt.Fprintf(w, "%d bytes are recieved.\n", n)
-					}
-				}
-			} else {
-				w.WriteHeader(http.StatusMethodNotAllowed)
-				fmt.Fprintf(w, "Method Not Allowed")
-			}
-		} else {
-			w.WriteHeader(http.StatusNotFound)
-			fmt.Fprintf(w, "Page Not Found")
-		}
-	})
+	http.HandleFunc("/files/", middleware.Timed(handler.FilesAPIHandler))
 
 	http.HandleFunc("/users/", func(w http.ResponseWriter, r *http.Request) {
 		// The "/users/" pattern matches everything prefixed, so we need to check
