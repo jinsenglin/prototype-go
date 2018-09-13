@@ -9,6 +9,9 @@ run-cmd-cp:
 	go build -o out/cp cmd/cp/*.go
 	./out/cp README.md /tmp/README.md
 
+build-cmd-linebot:
+	go build -o out/linebot cmd/linebot/*.go
+
 run-cmd-httpserv:
 	go run cmd/httpserv/main.go
 
