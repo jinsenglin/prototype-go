@@ -65,6 +65,59 @@ func RegisterRoutes() {
 		}
 	})
 
+	http.HandleFunc("/chats/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/chats/new" {
+			if r.Method == http.MethodGet {
+				w.Header().Set("Content-Type", "text/html; charset=utf-8")
+				fmt.Fprintf(w, "<form>chat: <input /><button>Submit</button></form>") // TODO: fix form action and method.
+			} else {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, "Page Not Found")
+		}
+	})
+
+	http.HandleFunc("/channels/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/channels/" {
+			if r.Method == http.MethodPost {
+				// TODO: create a channel
+			} else {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
+		} else if re, _ := regexp.Compile("^/channels/[1-9]$"); re.MatchString(r.URL.Path) {
+			if r.Method == http.MethodGet {
+				// TODO: check channel existence
+				// TODO: return a list of chats
+			} else {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
+		} else if re, _ := regexp.Compile("^/channels/[1-9]/update$"); re.MatchString(r.URL.Path) {
+			if r.Method == http.MethodPut {
+				// TODO: check channel existence
+				// TODO: update a channel by adding a chat
+			} else {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
+		} else if re, _ := regexp.Compile("^/channels/[1-9]/delete$"); re.MatchString(r.URL.Path) {
+			if r.Method == http.MethodDelete {
+				// TODO: check channel existence
+				// TODO: delete a channel
+			} else {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+				fmt.Fprintf(w, "Method Not Allowed")
+			}
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, "Page Not Found")
+		}
+	})
+
 	http.HandleFunc("/files/", middleware.Timed(handler.FilesAPIHandler))
 
 	http.Handle("/dummy/", middleware.WithSession(http.HandlerFunc(handler.DummyHandler)))
