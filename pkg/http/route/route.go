@@ -28,6 +28,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/jinsenglin/prototype-go/pkg/http/context"
 	"github.com/jinsenglin/prototype-go/pkg/model"
 )
 
@@ -40,6 +41,7 @@ func _idx(path string) int {
 
 var data = model.Users{}
 
+// RegisterRoutes ...
 func RegisterRoutes() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
@@ -117,11 +119,12 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X POST -L http://localhost:8080/users/ -F 'id=1' -F 'name=cclin'
 
-				_, cancelCtx := context.WithCancel(context.Background())
+				ctx, cancelCtx := context.WithCancel(context.Background())
 				defer cancelCtx()
 
 				id, _ := strconv.Atoi(r.FormValue("id"))
 				idx := id - 1
+				ctx = reqcontext.SetUserIndex(ctx, idx)
 				data.Create(idx, id, r.FormValue("name"))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
@@ -146,10 +149,11 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X GET -L http://localhost:8080/users/1
 
-				_, cancelCtx := context.WithCancel(context.Background())
+				ctx, cancelCtx := context.WithCancel(context.Background())
 				defer cancelCtx()
 
 				idx := _idx(r.URL.Path)
+				ctx = reqcontext.SetUserIndex(ctx, idx)
 				fmt.Fprintf(w, "%v", data.Get(idx))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
@@ -160,10 +164,11 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X GET -L http://localhost:8080/users/1/edit
 
-				_, cancelCtx := context.WithCancel(context.Background())
+				ctx, cancelCtx := context.WithCancel(context.Background())
 				defer cancelCtx()
 
 				idx := _idx(r.URL.Path)
+				ctx = reqcontext.SetUserIndex(ctx, idx)
 				u := data.Get(idx)
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
 				fmt.Fprintf(w, "<form><div>id: %v</div>name: <input value='%v'/><button>Update</button></form>", u.Id, u.Name)
@@ -176,10 +181,11 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X PUT -L http://localhost:8080/users/1/update -F 'name=cc lin'
 
-				_, cancelCtx := context.WithCancel(context.Background())
+				ctx, cancelCtx := context.WithCancel(context.Background())
 				defer cancelCtx()
 
 				idx := _idx(r.URL.Path)
+				ctx = reqcontext.SetUserIndex(ctx, idx)
 				data.Update(idx, r.FormValue("name"))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
@@ -190,10 +196,11 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X DELETE -L http://localhost:8080/users/1/delete
 
-				_, cancelCtx := context.WithCancel(context.Background())
+				ctx, cancelCtx := context.WithCancel(context.Background())
 				defer cancelCtx()
 
 				idx := _idx(r.URL.Path)
+				ctx = reqcontext.SetUserIndex(ctx, idx)
 				data.Delete(idx)
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
