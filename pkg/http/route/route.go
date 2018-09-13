@@ -21,7 +21,6 @@ See https://blog.golang.org/context
 package route
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -58,9 +57,6 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080
 				// curl -v -X GET -L http://localhost:8080/
 
-				_, cancelCtx := context.WithCancel(context.Background())
-				defer cancelCtx()
-
 				fmt.Fprintf(w, "Welcome")
 			}
 		} else {
@@ -83,9 +79,6 @@ func RegisterRoutes() {
 				// curl -v -X GET -L http://localhost:8080/users
 				// curl -v -X GET -L http://localhost:8080/users/
 
-				_, cancelCtx := context.WithCancel(context.Background())
-				defer cancelCtx()
-
 				for _, u := range data.List() {
 					fmt.Fprintln(w, u)
 				}
@@ -93,12 +86,9 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X POST -L http://localhost:8080/users/ -F 'id=1' -F 'name=cclin'
 
-				ctx, cancelCtx := context.WithCancel(context.Background())
-				defer cancelCtx()
-
 				id, _ := strconv.Atoi(r.FormValue("id"))
 				idx := id - 1
-				ctx = reqcontext.SetUserIndex(ctx, idx)
+				reqcontext.SetUserIndex(r.Context(), idx)
 				data.Create(idx, id, r.FormValue("name"))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
@@ -108,9 +98,6 @@ func RegisterRoutes() {
 			if r.Method == http.MethodGet {
 				// e.g.,
 				// curl -v -X GET -L http://localhost:8080/users/new
-
-				_, cancelCtx := context.WithCancel(context.Background())
-				defer cancelCtx()
 
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
 				fmt.Fprintf(w, "<form>name: <input /><button>Create</button></form>")
@@ -123,11 +110,8 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X GET -L http://localhost:8080/users/1
 
-				ctx, cancelCtx := context.WithCancel(context.Background())
-				defer cancelCtx()
-
 				idx := _idx(r.URL.Path)
-				ctx = reqcontext.SetUserIndex(ctx, idx)
+				reqcontext.SetUserIndex(r.Context(), idx)
 				fmt.Fprintf(w, "%v", data.Get(idx))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
@@ -138,11 +122,8 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X GET -L http://localhost:8080/users/1/edit
 
-				ctx, cancelCtx := context.WithCancel(context.Background())
-				defer cancelCtx()
-
 				idx := _idx(r.URL.Path)
-				ctx = reqcontext.SetUserIndex(ctx, idx)
+				reqcontext.SetUserIndex(r.Context(), idx)
 				u := data.Get(idx)
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
 				fmt.Fprintf(w, "<form><div>id: %v</div>name: <input value='%v'/><button>Update</button></form>", u.Id, u.Name)
@@ -155,11 +136,8 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X PUT -L http://localhost:8080/users/1/update -F 'name=cc lin'
 
-				ctx, cancelCtx := context.WithCancel(context.Background())
-				defer cancelCtx()
-
 				idx := _idx(r.URL.Path)
-				ctx = reqcontext.SetUserIndex(ctx, idx)
+				reqcontext.SetUserIndex(r.Context(), idx)
 				data.Update(idx, r.FormValue("name"))
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
@@ -170,11 +148,8 @@ func RegisterRoutes() {
 				// e.g.,
 				// curl -v -X DELETE -L http://localhost:8080/users/1/delete
 
-				ctx, cancelCtx := context.WithCancel(context.Background())
-				defer cancelCtx()
-
 				idx := _idx(r.URL.Path)
-				ctx = reqcontext.SetUserIndex(ctx, idx)
+				reqcontext.SetUserIndex(r.Context(), idx)
 				data.Delete(idx)
 			} else {
 				w.WriteHeader(http.StatusMethodNotAllowed)
