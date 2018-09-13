@@ -67,10 +67,23 @@ func RegisterRoutes() {
 
 	http.HandleFunc("/ws/", func(w http.ResponseWriter, r *http.Request) {
 		// TODO websocket
+
+		// e.g.,
+		/* curl --header "Connection: Upgrade" \
+		--header "Upgrade: websocket" \
+		--header "Host: localhost:8080" \
+		--header "Origin: http://localhost:80" \
+		--header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+		--header "Sec-WebSocket-Version: 13" \
+		-v -X GET -L http://localhost:8080/ws/
+		*/
 	})
 
 	http.HandleFunc("/h2/", func(w http.ResponseWriter, r *http.Request) {
 		// TODO http/2 server push
+
+		// e.g.,
+		// curl --http2 -v -X GET -L http://localhost:8080/h2/
 	})
 
 	http.HandleFunc("/chats/", func(w http.ResponseWriter, r *http.Request) {
