@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"time"
@@ -29,7 +30,20 @@ func Timed(fn func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter
 // WithSession ...
 func WithSession(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := reqcontext.SetSession(r.Context(), session.Session{})
+		var ctx context.Context
+
+		// e.g.,
+		// curl --cookie "sid=1"
+
+		if cookie, err := r.Cookie("sid"); err != nil {
+			expiration := time.Now().Add(365 * 24 * time.Hour)
+			sid := http.Cookie{Name: "sid", Value: "1", Expires: expiration} // TODO: refactor with a random session ID.
+			http.SetCookie(w, &sid)
+			ctx = reqcontext.SetSession(r.Context(), session.Session{ID: "1"})
+		} else {
+			ctx = reqcontext.SetSession(r.Context(), session.Session{ID: cookie.Value})
+		}
+
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
