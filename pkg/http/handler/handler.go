@@ -9,6 +9,10 @@ import (
 	"net/http"
 )
 
+// Dummy ...
+func Dummy(w http.ResponseWriter, r *http.Request) {
+}
+
 // FilesAPIHandler ...
 func FilesAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/files/" {
