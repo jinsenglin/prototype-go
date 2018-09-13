@@ -3,7 +3,9 @@ package middleware
 import (
 	"context"
 	"log"
+	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/jinsenglin/prototype-go/pkg/http/context"
@@ -36,10 +38,13 @@ func WithSession(next http.Handler) http.Handler {
 		// curl --cookie "sid=1"
 
 		if cookie, err := r.Cookie("sid"); err != nil {
+			sid := strconv.Itoa(rand.Int())
 			expiration := time.Now().Add(365 * 24 * time.Hour)
-			sid := http.Cookie{Name: "sid", Value: "1", Expires: expiration} // TODO: refactor with a random session ID.
-			http.SetCookie(w, &sid)
-			ctx = reqcontext.SetSession(r.Context(), session.Session{ID: "1"})
+			c := http.Cookie{Name: "sid", Value: sid, Expires: expiration, Path: "/"}
+
+			http.SetCookie(w, &c)
+
+			ctx = reqcontext.SetSession(r.Context(), session.Session{ID: sid})
 		} else {
 			ctx = reqcontext.SetSession(r.Context(), session.Session{ID: cookie.Value})
 		}
