@@ -2,14 +2,19 @@ package handler
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/jinsenglin/prototype-go/pkg/model"
 )
 
 func ChatsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/chats/" {
 		if r.Method == http.MethodPost {
-			log.Printf("TODO: add a chat '%s' to a channel", r.FormValue("chat")) // TODO
+
+			_channel := channels.Items[0] // TODO: use the real channel.
+			_chats := _channel.Chats
+			_chats = append(_chats, model.Chat{Message: r.FormValue("chat")}) // TOOD: refactor with a chan.
+
 			http.Redirect(w, r, "/chats/new", 301)
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)

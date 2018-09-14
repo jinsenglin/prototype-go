@@ -3,7 +3,7 @@ package model
 import "sync"
 
 type Channel struct {
-	Slice []Chat
+	Chats []Chat
 }
 
 type Channels struct {
