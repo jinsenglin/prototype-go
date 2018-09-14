@@ -10,10 +10,9 @@ import (
 func ChatsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/chats/" {
 		if r.Method == http.MethodPost {
-
 			_channel := channels.Items[0] // TODO: use the real channel.
-			_chats := _channel.Chats
-			_chats = append(_chats, model.Chat{Message: r.FormValue("chat")}) // TOOD: refactor with a chan for goroutine safe.
+
+			go _channel.Produce(model.Chat{Message: r.FormValue("chat")})
 
 			http.Redirect(w, r, "/chats/new", 301)
 		} else {
