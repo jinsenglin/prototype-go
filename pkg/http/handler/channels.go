@@ -8,7 +8,7 @@ import (
 	"github.com/jinsenglin/prototype-go/pkg/model"
 )
 
-var channels = model.Channels{Items: make([]*model.Channel, 1)} // TODO
+var channels = model.Channels{Items: make([]*model.Channel, 1)} // TODO: choose a good capacity.
 
 func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/channels/" {
