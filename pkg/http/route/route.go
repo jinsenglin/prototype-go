@@ -59,6 +59,8 @@ func RegisterRoutes() {
 
 	http.HandleFunc("/chunked-response/", handler.ChunkedHandler)
 
+	http.HandleFunc("/sse/", handler.SSEHandler)
+
 	http.HandleFunc("/h2/", handler.H2Handler)
 
 	http.HandleFunc("/ws/", func(w http.ResponseWriter, r *http.Request) {
