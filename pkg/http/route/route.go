@@ -61,7 +61,7 @@ func RegisterRoutes() {
 
 	http.HandleFunc("/sse/", handler.SSEHandler)
 
-	http.HandleFunc("/h2/", handler.H2Handler)
+	http.HandleFunc("/h2-server-push/", handler.H2Handler)
 
 	http.HandleFunc("/ws/", func(w http.ResponseWriter, r *http.Request) {
 		// TODO websocket

@@ -20,12 +20,12 @@ Demo HTTP/2 Server Push
 
 func H2Handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		if r.URL.Path != "/h2/" {
+		if r.URL.Path != "/h2-server-push/" {
 			w.WriteHeader(http.StatusNotFound)
 			fmt.Fprintf(w, "Page Not Found")
 		} else {
 			// NOTE: MUST USE HTTPS e.g.,
-			// curl --http2 -v -X GET -L -k https://localhost:8443/h2/
+			// curl --http2 -v -X GET -L -k https://localhost:8443/h2-server-push/
 
 			if pusher, ok := w.(http.Pusher); ok {
 				if err := pusher.Push("/static/app.js", nil); err != nil {
