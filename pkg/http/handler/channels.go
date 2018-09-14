@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+
+	"github.com/jinsenglin/prototype-go/pkg/model"
 )
+
+var channels = model.Channels{}
 
 func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/channels/" {
