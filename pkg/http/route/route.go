@@ -25,22 +25,10 @@ package route
 
 import (
 	"net/http"
-	"regexp"
-	"strconv"
 
 	"github.com/jinsenglin/prototype-go/pkg/http/handler"
 	"github.com/jinsenglin/prototype-go/pkg/http/middleware"
-	"github.com/jinsenglin/prototype-go/pkg/model"
 )
-
-func _idx(path string) int {
-	re, _ := regexp.Compile("[1-9]")
-	id, _ := strconv.Atoi(re.FindString(path))
-	idx := id - 1
-	return idx
-}
-
-var data = model.Users{}
 
 // RegisterRoutes ...
 func RegisterRoutes() {
