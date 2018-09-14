@@ -1,26 +1,3 @@
-/*
-Package route ...
-
-Implementations of http file uploader client and server
-See https://gist.github.com/ebraminio/576fdfdff425bf3335b51a191a65dbdb
-
-Copy a struct instance
-See https://flaviocopes.com/go-copying-structs/
-
-Convert an array to a slice
-See https://stackoverflow.com/questions/28886616/convert-array-to-slice-in-go
-
-Deep copy a struct instance
-- https://gobyexample.com/json
-- https://blog.golang.org/json-and-go
-- https://www.jianshu.com/p/f1cdb1bc1b74
-
-With context
-See https://blog.golang.org/context
-
-HTTP/2 Server Push
-See https://blog.golang.org/h2push
-*/
 package route
 
 import (
