@@ -17,6 +17,9 @@ Deep copy a struct instance
 
 With context
 See https://blog.golang.org/context
+
+HTTP/2 Server Push
+See https://blog.golang.org/h2push
 */
 package route
 
@@ -44,6 +47,8 @@ func RegisterRoutes() {
 
 	http.HandleFunc("/", handler.RootHandler)
 
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
 	http.HandleFunc("/users/", handler.UsersAPIHandler)
 
 	http.HandleFunc("/files/", middleware.Timed(handler.FilesAPIHandler))
@@ -69,8 +74,8 @@ func RegisterRoutes() {
 	http.HandleFunc("/h2/", func(w http.ResponseWriter, r *http.Request) {
 		// TODO http/2 server push
 
-		// e.g.,
-		// curl --http2 -v -X GET -L http://localhost:8080/h2/
+		// NOTE: MUST USE HTTPS e.g.,
+		// curl --http2 -v -X GET -L https://localhost:8443/h2/
 	})
 
 	http.Handle("/dummy/", middleware.WithSession(http.HandlerFunc(handler.DummyHandler)))
