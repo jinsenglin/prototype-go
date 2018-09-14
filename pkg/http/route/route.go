@@ -24,6 +24,7 @@ See https://blog.golang.org/h2push
 package route
 
 import (
+	"log"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -75,7 +76,18 @@ func RegisterRoutes() {
 		// TODO http/2 server push
 
 		// NOTE: MUST USE HTTPS e.g.,
-		// curl --http2 -v -X GET -L https://localhost:8443/h2/
+		// curl --http2 -v -X GET -L -k https://localhost:8443/h2/
+		//
+
+		if pusher, ok := w.(http.Pusher); ok {
+			// Push is supported.
+			if err := pusher.Push("/static/app.js", nil); err != nil {
+				log.Printf("Failed to push: %v", err)
+				// WARNING: feature not supported when using curl
+			}
+		} else {
+			log.Printf("Push is not supported.")
+		}
 	})
 
 	http.Handle("/dummy/", middleware.WithSession(http.HandlerFunc(handler.DummyHandler)))
