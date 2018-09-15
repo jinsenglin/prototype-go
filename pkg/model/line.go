@@ -22,7 +22,13 @@ func (this *Line) Listen() {
 }
 
 func (this *Line) openChannel(id int) {
-	this.Channels[id] = &Channel{}
+	_channel := &Channel{
+		Notifier:       make(chan []byte, 1),
+		NewClients:     make(chan chan []byte),
+		ClosingClients: make(chan chan []byte),
+		Clients:        make(map[chan []byte]bool)}
+	go _channel.Listen()
+	this.Channels[id] = _channel
 	log.Println("Opened a channel")
 }
 
@@ -32,6 +38,7 @@ func (this *Line) GetChannel(id int, channel *Channel) {
 }
 
 func (this *Line) closeChannel(id int) {
+	// TODO terminat the channel goroutine
 	delete(this.Channels, id)
 	log.Println("Closed a channel")
 }
