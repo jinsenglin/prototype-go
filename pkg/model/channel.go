@@ -17,13 +17,13 @@ func (this *Channel) Produce(chat *Chat) {
 	log.Printf("Produced %v", chat)
 }
 
-func (this *Channel) Consume() *Chat {
+func (this *Channel) Consume() (chat *Chat) {
 	log.Printf("Consuming")
-	chat := <-this.Pipeline
+	chat = <-this.Pipeline
 	log.Printf("Consumed %v", chat)
 
 	this.Chats = append(this.Chats, chat)
-	return chat
+	return
 }
 
 type Channels struct {

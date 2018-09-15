@@ -17,7 +17,7 @@ func (u1 *User) Copy() (u2 User) {
 	// deep copy
 	b, _ := json.Marshal(u1)
 	json.Unmarshal(b, &u2)
-	return u2
+	return
 }
 
 type Users struct {
@@ -33,12 +33,12 @@ func (data *Users) List() []User {
 	return us
 }
 
-func (data *Users) Get(idx int) User {
+func (data *Users) Get(idx int) (u User) {
 	data.mux.Lock()
-	u := data.Items[idx]
+	u = data.Items[idx]
 	data.mux.Unlock()
 
-	return u
+	return
 }
 
 func (data *Users) Create(idx int, id int, name string) {
