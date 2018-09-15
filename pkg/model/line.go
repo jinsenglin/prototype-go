@@ -27,7 +27,7 @@ func (this *Line) openChannel(id int) {
 
 	_channel := &Channel{
 		Cancel:         cancel,
-		Notifier:       make(chan []byte, 1),
+		Notifier:       make(chan []byte, 100),
 		NewClients:     make(chan chan []byte),
 		ClosingClients: make(chan chan []byte),
 		Clients:        make(map[chan []byte]bool)}
@@ -38,7 +38,7 @@ func (this *Line) openChannel(id int) {
 	log.Println("Opened a channel")
 }
 
-func (this *Line) GetChannel(id int, channel *Channel) {
+func (this *Line) GetChannel(id int) (channel *Channel) {
 	channel = this.Channels[id]
 	return
 }

@@ -51,6 +51,7 @@ func (this *Channel) Listen(ctx context.Context) {
 			for clientMessageChan, _ := range this.Clients {
 				clientMessageChan <- event
 			}
+			log.Printf("Broadcasted %s", event)
 		}
 	}
 }
