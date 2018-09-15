@@ -24,7 +24,7 @@ func RegisterRoutes() {
 
 	http.HandleFunc("/chunked-response/", handler.ChunkedHandler)
 
-	http.HandleFunc("/sse/", handler.SSEHandler)
+	http.HandleFunc("/sse/", handler.SSEServer.ServeHTTP)
 
 	http.HandleFunc("/h2-server-push/", handler.H2Handler)
 
