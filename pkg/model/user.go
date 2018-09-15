@@ -13,10 +13,10 @@ type User struct {
 	Map   map[string]int // for demo of deep copy
 }
 
-func (u1 *User) Copy() (u2 User) {
+func (this *User) Copy() (that User) {
 	// deep copy
-	b, _ := json.Marshal(u1)
-	json.Unmarshal(b, &u2)
+	b, _ := json.Marshal(this)
+	json.Unmarshal(b, &that)
 	return
 }
 
@@ -25,38 +25,38 @@ type Users struct {
 	mux   sync.Mutex
 }
 
-func (data *Users) List() []User {
-	data.mux.Lock()
-	us := data.Items[:]
-	data.mux.Unlock()
-
-	return us
-}
-
-func (data *Users) Get(idx int) (u User) {
-	data.mux.Lock()
-	u = data.Items[idx]
-	data.mux.Unlock()
+func (this *Users) List() (items []User) {
+	this.mux.Lock()
+	items = this.Items[:]
+	this.mux.Unlock()
 
 	return
 }
 
-func (data *Users) Create(idx int, id int, name string) {
-	data.mux.Lock()
-	data.Items[idx].Id = id
-	data.Items[idx].Name = name
-	data.mux.Unlock()
+func (this *Users) Get(idx int) (item User) {
+	this.mux.Lock()
+	item = this.Items[idx]
+	this.mux.Unlock()
+
+	return
 }
 
-func (data *Users) Update(idx int, name string) {
-	data.mux.Lock()
-	data.Items[idx].Name = name
-	data.mux.Unlock()
+func (this *Users) Create(idx int, id int, name string) {
+	this.mux.Lock()
+	this.Items[idx].Id = id
+	this.Items[idx].Name = name
+	this.mux.Unlock()
 }
 
-func (data *Users) Delete(idx int) {
-	data.mux.Lock()
-	data.Items[idx].Id = 0
-	data.Items[idx].Name = ""
-	data.mux.Unlock()
+func (this *Users) Update(idx int, name string) {
+	this.mux.Lock()
+	this.Items[idx].Name = name
+	this.mux.Unlock()
+}
+
+func (this *Users) Delete(idx int) {
+	this.mux.Lock()
+	this.Items[idx].Id = 0
+	this.Items[idx].Name = ""
+	this.mux.Unlock()
 }
