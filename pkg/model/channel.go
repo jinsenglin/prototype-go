@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"log"
 	"sync"
 )
@@ -9,6 +10,8 @@ type Channel struct {
 	Id       int
 	Chats    []*Chat
 	Pipeline chan *Chat
+
+	Cancel context.CancelFunc
 
 	// Events are pushed to this channel by the main events-gathering routine
 	Notifier chan []byte
@@ -23,23 +26,26 @@ type Channel struct {
 	Clients map[chan []byte]bool
 }
 
-func (this *Channel) Listen() {
+func (this *Channel) Listen(ctx context.Context) {
 	for {
 		select {
-		case s := <-this.NewClients:
+		case <-ctx.Done():
+			log.Printf("Stopped a channel")
+			return
 
+		case s := <-this.NewClients:
 			// A new client has connected.
 			// Register their message channel
 			this.Clients[s] = true
 			log.Printf("Client added. %d registered clients", len(this.Clients))
-		case s := <-this.ClosingClients:
 
+		case s := <-this.ClosingClients:
 			// A client has dettached and we want to
 			// stop sending them messages.
 			delete(this.Clients, s)
 			log.Printf("Removed client. %d registered clients", len(this.Clients))
-		case event := <-this.Notifier:
 
+		case event := <-this.Notifier:
 			// We got a new event from the outside!
 			// Send event to all connected clients
 			for clientMessageChan, _ := range this.Clients {
