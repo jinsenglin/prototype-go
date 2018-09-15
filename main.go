@@ -19,6 +19,7 @@ func main() {
 
 	ch0 := line.GetChannel(0)
 	go func(ch *model.Channel) {
+		// Simulate post a message to channel 0 from a
 		for i := 1; i < 5; i++ {
 			ch.Notifier <- []byte("a")
 			log.Println("Sent a")
@@ -26,6 +27,7 @@ func main() {
 		}
 	}(ch0)
 	go func(ch *model.Channel) {
+		// Simulate post a message to channel 0 from b
 		for i := 1; i < 5; i++ {
 			ch.Notifier <- []byte("b")
 			log.Println("Sent b")
@@ -41,6 +43,7 @@ func main() {
 
 	ch1 := line.GetChannel(1)
 	go func(ch *model.Channel) {
+		// Simulate post a message to channel 1 from c
 		for i := 1; i < 5; i++ {
 			ch.Notifier <- []byte("c")
 			log.Println("Sent c")
@@ -48,6 +51,7 @@ func main() {
 		}
 	}(ch1)
 	go func(ch *model.Channel) {
+		// Simulate post a message to channel 1 from d
 		for i := 1; i < 5; i++ {
 			ch.Notifier <- []byte("d")
 			log.Println("Sent d")
