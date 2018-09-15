@@ -15,7 +15,7 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			// TODO: create a channel
 
-			_channel := &model.Channel{Pipeline: make(chan model.Chat)}
+			_channel := &model.Channel{Chats: make([]*model.Chat, 0), Pipeline: make(chan *model.Chat)}
 			channels.Items[0] = _channel // TODO: use the real channel.
 			go _channel.Consume()        // TODO: exit goroutine when channel is deleted.
 		} else {
@@ -26,6 +26,14 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			// TODO: check channel existence
 			// TODO: return a list of chats
+
+			// DEMO CODE
+			_channel := channels.Items[0]
+			_chats := _channel.Chats
+			for _, _chat := range _chats {
+				fmt.Fprintf(w, "%v\n", _chat)
+			}
+			// END DEMO
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			fmt.Fprintf(w, "Method Not Allowed")

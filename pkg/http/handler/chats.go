@@ -12,7 +12,7 @@ func ChatsAPIHandler(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			_channel := channels.Items[0] // TODO: use the real channel.
 
-			go _channel.Produce(model.Chat{Message: r.FormValue("chat")})
+			go _channel.Produce(&model.Chat{Message: r.FormValue("chat")})
 
 			http.Redirect(w, r, "/chats/new", 301)
 		} else {
