@@ -26,11 +26,6 @@ func (this *Line) openChannel(ch *Channel) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	ch.Cancel = cancel
-	ch.Notifier = make(chan []byte, 100)
-	ch.NewClients = make(chan chan []byte)
-	ch.ClosingClients = make(chan chan []byte)
-	ch.Clients = make(map[chan []byte]bool)
-
 	go ch.Listen(ctx)
 
 	this.Channels[ch.Id] = ch

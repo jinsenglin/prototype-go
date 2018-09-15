@@ -14,7 +14,12 @@ func main() {
 	// DEMO CODE
 
 	// T0
-	ch0 := &model.Channel{Id: 0}
+	ch0 := &model.Channel{
+		Id:             0,
+		Notifier:       make(chan []byte, 100),
+		NewClients:     make(chan chan []byte),
+		ClosingClients: make(chan chan []byte),
+		Clients:        make(map[chan []byte]bool)}
 	line.OpenChannel <- ch0
 	//line.Dump()
 
@@ -60,7 +65,12 @@ func main() {
 	time.Sleep(10e9)
 
 	// T1
-	ch1 := &model.Channel{Id: 1}
+	ch1 := &model.Channel{
+		Id:             1,
+		Notifier:       make(chan []byte, 100),
+		NewClients:     make(chan chan []byte),
+		ClosingClients: make(chan chan []byte),
+		Clients:        make(map[chan []byte]bool)}
 	line.OpenChannel <- ch1
 	//line.Dump()
 
