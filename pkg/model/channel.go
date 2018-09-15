@@ -11,6 +11,12 @@ type Channel struct {
 	Pipeline chan *Chat
 }
 
+func (this *Channel) Listen() {
+	for {
+		select {}
+	}
+}
+
 func (this *Channel) Produce(chat *Chat) {
 	log.Printf("Producing %v", chat)
 	this.Pipeline <- chat

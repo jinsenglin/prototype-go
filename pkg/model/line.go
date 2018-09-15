@@ -26,6 +26,11 @@ func (this *Line) openChannel(id int) {
 	log.Println("Opened a channel")
 }
 
+func (this *Line) GetChannel(id int, channel *Channel) {
+	channel = this.Channels[id]
+	return
+}
+
 func (this *Line) closeChannel(id int) {
 	delete(this.Channels, id)
 	log.Println("Closed a channel")
