@@ -7,48 +7,40 @@ import (
 
 type Line struct {
 	Channels     map[int]*Channel
-	OpenChannel  chan int
-	CloseChannel chan int
+	OpenChannel  chan *Channel
+	CloseChannel chan *Channel
 }
 
 func (this *Line) Listen() {
 	for {
 		select {
-		case id := <-this.OpenChannel:
-			this.openChannel(id)
-		case id := <-this.CloseChannel:
-			this.closeChannel(id)
+		case ch := <-this.OpenChannel:
+			this.openChannel(ch)
+		case ch := <-this.CloseChannel:
+			this.closeChannel(ch)
 		}
 	}
 }
 
-func (this *Line) openChannel(id int) {
+func (this *Line) openChannel(ch *Channel) {
 	ctx, cancel := context.WithCancel(context.Background())
 
-	_channel := &Channel{
-		Cancel:         cancel,
-		Notifier:       make(chan []byte, 100),
-		NewClients:     make(chan chan []byte),
-		ClosingClients: make(chan chan []byte),
-		Clients:        make(map[chan []byte]bool)}
+	ch.Cancel = cancel
+	ch.Notifier = make(chan []byte, 100)
+	ch.NewClients = make(chan chan []byte)
+	ch.ClosingClients = make(chan chan []byte)
+	ch.Clients = make(map[chan []byte]bool)
 
-	go _channel.Listen(ctx)
+	go ch.Listen(ctx)
 
-	this.Channels[id] = _channel
+	this.Channels[ch.Id] = ch
 	log.Println("Opened a channel")
 }
 
-func (this *Line) GetChannel(id int) (channel *Channel) {
-	channel = this.Channels[id]
-	return
-}
+func (this *Line) closeChannel(ch *Channel) {
+	ch.Cancel()
 
-func (this *Line) closeChannel(id int) {
-	_channel := this.Channels[id]
-
-	_channel.Cancel()
-
-	delete(this.Channels, id)
+	delete(this.Channels, ch.Id)
 	log.Println("Closed a channel")
 }
 
@@ -62,7 +54,7 @@ func (this *Line) Dump() {
 func NewLine() (line *Line) {
 	line = &Line{
 		Channels:     make(map[int]*Channel),
-		OpenChannel:  make(chan int),
-		CloseChannel: make(chan int)}
+		OpenChannel:  make(chan *Channel),
+		CloseChannel: make(chan *Channel)}
 	return
 }
