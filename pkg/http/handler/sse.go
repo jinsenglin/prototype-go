@@ -15,6 +15,8 @@ func SSEHandler(w http.ResponseWriter, r *http.Request) {
 			// e.g.,
 			// curl -v -X GET -L http://localhost:8080/sse/
 
+			// TODO: broadcast
+
 			if flusher, ok := w.(http.Flusher); ok {
 				w.Header().Set("Content-Type", "text/event-stream")
 				w.Header().Set("Cache-Control", "no-cache")
