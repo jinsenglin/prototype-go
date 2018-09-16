@@ -20,7 +20,7 @@ func ChatsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	} else if r.URL.Path == "/chats/new" {
 		if r.Method == http.MethodGet {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			fmt.Fprintf(w, "<form action='/chats/' method='POST'>chat: <input name='chat'/><button>Submit</button></form>") // TODO: fix form action and method.
+			fmt.Fprintf(w, "<form action='/chats/' method='POST'>chat: <input name='chat'/><button>Submit</button></form>")
 		} else {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}

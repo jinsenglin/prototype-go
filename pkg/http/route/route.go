@@ -22,6 +22,9 @@ func RegisterRoutes() {
 	// exactly '/files'
 	http.HandleFunc("/files", middleware.Timed(handler.FilesAPIHandler))
 
+	// equals to '^/spaces'
+	http.HandleFunc("/spaces/", handler.SpacesAPIHandler)
+
 	// equals to '^/channels'
 	http.HandleFunc("/channels/", handler.ChannelsAPIHandler)
 
