@@ -7,10 +7,8 @@ import (
 )
 
 func ChunkedHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		if r.URL.Path != "/chunked-response/" {
-			http.NotFound(w, r)
-		} else {
+	if r.URL.Path == "/chunked-response/" {
+		if r.Method == http.MethodGet {
 			// e.g.,
 			// curl -v -X GET -L http://localhost:8080/chunked-response/
 
@@ -22,10 +20,12 @@ func ChunkedHandler(w http.ResponseWriter, r *http.Request) {
 					time.Sleep(500 * time.Millisecond)
 				}
 			} else {
-				fmt.Fprintf(w, "Chunked response feature is not supported.")
+				http.Error(w, "Chunked response feature is not supported.", http.StatusBadRequest)
 			}
+		} else {
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		http.NotFound(w, r)
 	}
 }

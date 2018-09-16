@@ -19,10 +19,8 @@ Demo HTTP/2 Server Push
 `
 
 func H2Handler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		if r.URL.Path != "/h2-server-push/" {
-			http.NotFound(w, r)
-		} else {
+	if r.URL.Path == "/h2-server-push/" {
+		if r.Method == http.MethodGet {
 			// NOTE: MUST USE HTTPS e.g.,
 			// curl --http2 -v -X GET -L -k https://localhost:8443/h2-server-push/
 
@@ -39,10 +37,12 @@ func H2Handler(w http.ResponseWriter, r *http.Request) {
 
 				fmt.Fprintf(w, indexHTML)
 			} else {
-				fmt.Fprintf(w, "HTTP/2 server push feature is not supported.")
+				http.Error(w, "HTTP/2 server push feature is not supported.", http.StatusBadRequest)
 			}
+		} else {
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		http.NotFound(w, r)
 	}
 }
