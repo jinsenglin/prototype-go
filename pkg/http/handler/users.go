@@ -10,7 +10,7 @@ import (
 	"github.com/jinsenglin/prototype-go/pkg/model"
 )
 
-func _idx(path string) (index int) {
+func user_idx(path string) (index int) {
 	re, _ := regexp.Compile("[1-9]")
 	id, _ := strconv.Atoi(re.FindString(path))
 	index = id - 1
@@ -61,7 +61,7 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			// e.g.,
 			// curl -v -X GET -L http://localhost:8080/users/1
 
-			idx := _idx(r.URL.Path)
+			idx := user_idx(r.URL.Path)
 			reqcontext.SetUserIndex(r.Context(), idx)
 			fmt.Fprintf(w, "%v", data.Get(idx))
 		} else {
@@ -72,7 +72,7 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			// e.g.,
 			// curl -v -X GET -L http://localhost:8080/users/1/edit
 
-			idx := _idx(r.URL.Path)
+			idx := user_idx(r.URL.Path)
 			reqcontext.SetUserIndex(r.Context(), idx)
 			u := data.Get(idx)
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -85,7 +85,7 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			// e.g.,
 			// curl -v -X PUT -L http://localhost:8080/users/1/update -F 'name=cc lin'
 
-			idx := _idx(r.URL.Path)
+			idx := user_idx(r.URL.Path)
 			reqcontext.SetUserIndex(r.Context(), idx)
 			data.Update(idx, r.FormValue("name"))
 		} else {
@@ -96,7 +96,7 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			// e.g.,
 			// curl -v -X DELETE -L http://localhost:8080/users/1/delete
 
-			idx := _idx(r.URL.Path)
+			idx := user_idx(r.URL.Path)
 			reqcontext.SetUserIndex(r.Context(), idx)
 			data.Delete(idx)
 		} else {
