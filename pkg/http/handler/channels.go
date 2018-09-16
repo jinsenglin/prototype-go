@@ -48,6 +48,7 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 					defer func() {
 						log.Println("going to be offline because func return.")
 						channel.ClosingClients <- messageChan
+						log.Println("offline")
 					}()
 					notify := w.(http.CloseNotifier).CloseNotify()
 					go func() {
@@ -62,6 +63,7 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 							fmt.Fprintf(w, "%s\n", message)
 							flusher.Flush()
 						case <-channel.Context.Done():
+							log.Println("going to be offline because server close.")
 							message := fmt.Sprintf("Channel %d is closed.", id)
 							fmt.Fprintf(w, message)
 							flusher.Flush()

@@ -27,6 +27,10 @@ func (this *Channel) Listen() {
 	for {
 		select {
 		case <-this.Context.Done():
+			for s := range this.ClosingClients {
+				delete(this.Clients, s)
+				log.Printf("Removed client. %d registered clients", len(this.Clients))
+			}
 			log.Printf("Stopped a channel")
 			return
 
