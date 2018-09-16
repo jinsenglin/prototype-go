@@ -12,6 +12,10 @@ run-cmd-cp:
 build-cmd-linebot:
 	go build -o out/linebot cmd/linebot/*.go
 
+run-test-case1:
+	go build -o out/test-case1 cmd/test/case1/*.go
+	./out/test-case1
+
 run-cmd-httpserv:
 	go run cmd/httpserv/main.go
 
