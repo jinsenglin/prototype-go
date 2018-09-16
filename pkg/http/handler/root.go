@@ -6,7 +6,6 @@ import (
 )
 
 func RootHandler(w http.ResponseWriter, r *http.Request) {
-	// HTTP GET to visit welcome page
 	// The "/" pattern matches everything, so we need to check
 	// that we're at the root here.
 
@@ -14,8 +13,8 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 
 			// e.g.,
-			// curl -v -X GET -L http://localhost:8080
-			// curl -v -X GET -L http://localhost:8080/
+			// curl -L http://localhost:8080
+			// curl http://localhost:8080/
 
 			fmt.Fprintf(w, "Welcome")
 		} else {

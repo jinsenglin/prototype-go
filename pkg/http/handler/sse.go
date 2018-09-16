@@ -47,59 +47,55 @@ type Broker struct {
 }
 
 func (broker *Broker) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-	if req.URL.Path == "/sse/" {
-		if req.Method == http.MethodGet {
-			// e.g.,
-			// curl -v -X GET -L http://localhost:8080/sse/
+	if req.Method == http.MethodGet {
+		// e.g.,
+		// curl http://localhost:8080/sse
 
-			// Make sure that the writer supports flushing.
-			//
-			flusher, ok := rw.(http.Flusher)
+		// Make sure that the writer supports flushing.
+		//
+		flusher, ok := rw.(http.Flusher)
 
-			if !ok {
-				http.Error(rw, "Streaming unsupported!", http.StatusInternalServerError)
-				return
-			}
+		if !ok {
+			http.Error(rw, "Streaming unsupported!", http.StatusInternalServerError)
+			return
+		}
 
-			rw.Header().Set("Content-Type", "text/event-stream")
-			rw.Header().Set("Cache-Control", "no-cache")
-			rw.Header().Set("Connection", "keep-alive")
-			rw.Header().Set("Access-Control-Allow-Origin", "*")
+		rw.Header().Set("Content-Type", "text/event-stream")
+		rw.Header().Set("Cache-Control", "no-cache")
+		rw.Header().Set("Connection", "keep-alive")
+		rw.Header().Set("Access-Control-Allow-Origin", "*")
 
-			// Each connection registers its own message channel with the Broker's connections registry
-			messageChan := make(chan []byte)
+		// Each connection registers its own message channel with the Broker's connections registry
+		messageChan := make(chan []byte)
 
-			// Signal the broker that we have a new connection
-			broker.newClients <- messageChan
+		// Signal the broker that we have a new connection
+		broker.newClients <- messageChan
 
-			// Remove this client from the map of connected clients
-			// when this handler exits.
-			defer func() {
-				broker.closingClients <- messageChan
-			}()
+		// Remove this client from the map of connected clients
+		// when this handler exits.
+		defer func() {
+			broker.closingClients <- messageChan
+		}()
 
-			// Listen to connection close and un-register messageChan
-			notify := rw.(http.CloseNotifier).CloseNotify()
+		// Listen to connection close and un-register messageChan
+		notify := rw.(http.CloseNotifier).CloseNotify()
 
-			go func() {
-				<-notify
-				broker.closingClients <- messageChan
-			}()
+		go func() {
+			<-notify
+			broker.closingClients <- messageChan
+		}()
 
-			for {
+		for {
 
-				// Write to the ResponseWriter
-				// Server Sent Events compatible
-				fmt.Fprintf(rw, "data: %s\n\n", <-messageChan)
+			// Write to the ResponseWriter
+			// Server Sent Events compatible
+			fmt.Fprintf(rw, "data: %s\n\n", <-messageChan)
 
-				// Flush the data immediatly instead of buffering it for later.
-				flusher.Flush()
-			}
-		} else {
-			http.Error(rw, "Method Not Allowed", http.StatusMethodNotAllowed)
+			// Flush the data immediatly instead of buffering it for later.
+			flusher.Flush()
 		}
 	} else {
-		http.NotFound(rw, req)
+		http.Error(rw, "Method Not Allowed", http.StatusMethodNotAllowed)
 	}
 }
 
