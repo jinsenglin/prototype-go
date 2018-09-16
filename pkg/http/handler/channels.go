@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -45,17 +46,25 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 					messageChan := make(chan []byte)
 					channel.NewClients <- messageChan
 					defer func() {
+						log.Println("going to be offline because func return.")
 						channel.ClosingClients <- messageChan
 					}()
+					notify := w.(http.CloseNotifier).CloseNotify()
+					go func() {
+						<-notify
+						log.Println("going to be offline because client leave.")
+						channel.ClosingClients <- messageChan
+					}()
+
 					for {
 						select {
 						case message := <-messageChan:
 							fmt.Fprintf(w, "%s\n", message)
 							flusher.Flush()
 						case <-channel.Context.Done():
-							// TODO bug fix
 							message := fmt.Sprintf("Channel %d is closed.", id)
 							fmt.Fprintf(w, message)
+							flusher.Flush()
 							return
 						}
 					}
