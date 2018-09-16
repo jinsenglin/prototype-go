@@ -37,6 +37,8 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 						channel.ClosingClients <- messageChan
 					}()
 					for {
+						// TODO: 1 when messageChan is closed
+						// TODO: 2 when channel.Context.Done()
 						fmt.Fprintf(w, "%s\n", <-messageChan)
 						flusher.Flush()
 					}
@@ -47,17 +49,14 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
-	} else if re, _ := regexp.Compile("^/channels/[1-9]/update$"); re.MatchString(r.URL.Path) {
-		if r.Method == http.MethodPut {
-			// TODO: check channel existence
-			// TODO: update a channel by adding a chat
-		} else {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		}
 	} else if re, _ := regexp.Compile("^/channels/[1-9]/delete$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodDelete {
-			// TODO: check channel existence
-			// TODO: delete a channel
+			if channel := linectl.GetChannel(0); channel == nil { // TODO: fix channel id
+				http.Error(w, "Channel 0 is not opened.", http.StatusInternalServerError)
+			} else {
+				linectl.CloseChannel <- channel
+				fmt.Fprintf(w, "Channel 0 is closed.")
+			}
 		} else {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}

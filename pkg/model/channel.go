@@ -6,8 +6,9 @@ import (
 )
 
 type Channel struct {
-	Id     int
-	Cancel context.CancelFunc
+	Id      int
+	Context context.Context
+	Cancel  context.CancelFunc
 
 	// Events are pushed to this channel by the main events-gathering routine
 	Notifier chan []byte
@@ -22,10 +23,16 @@ type Channel struct {
 	Clients map[chan []byte]bool
 }
 
-func (this *Channel) Listen(ctx context.Context) {
+func (this *Channel) Listen() {
 	for {
 		select {
-		case <-ctx.Done():
+		case <-this.Context.Done():
+			// TODO
+			/*
+				for clientMessageChan, _ := range this.Clients {
+					close(clientMessageChan)
+				}
+			*/
 			log.Printf("Stopped a channel")
 			return
 

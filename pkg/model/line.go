@@ -23,10 +23,9 @@ func (this *Line) Listen() {
 }
 
 func (this *Line) openChannel(ch *Channel) {
-	ctx, cancel := context.WithCancel(context.Background())
+	ch.Context, ch.Cancel = context.WithCancel(context.Background())
 
-	ch.Cancel = cancel
-	go ch.Listen(ctx)
+	go ch.Listen()
 
 	this.Channels[ch.Id] = ch
 	log.Println("Opened a channel")
