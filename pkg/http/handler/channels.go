@@ -24,7 +24,8 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 			id, _ := strconv.Atoi(r.FormValue("id"))
 			channel := model.NewChannel(id)
 			linectl.OpenChannel <- channel
-			fmt.Fprintf(w, "Channel 0 is created.")
+			message := fmt.Sprintf("Channel %d is opened.", id)
+			fmt.Fprintf(w, message)
 		} else {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
@@ -32,7 +33,8 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			id := channel_id(r.URL.Path)
 			if channel := linectl.GetChannel(id); channel == nil {
-				http.Error(w, "Channel 0 is not opened.", http.StatusInternalServerError)
+				message := fmt.Sprintf("Channel %d is not opened.", id)
+				http.Error(w, message, http.StatusInternalServerError)
 			} else {
 				if flusher, ok := w.(http.Flusher); ok {
 					w.Header().Set("Content-Type", "text/event-stream")
@@ -51,7 +53,9 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 							fmt.Fprintf(w, "%s\n", message)
 							flusher.Flush()
 						case <-channel.Context.Done():
-							fmt.Fprintf(w, "Channel 0 is closed.")
+							// TODO bug fix
+							message := fmt.Sprintf("Channel %d is closed.", id)
+							fmt.Fprintf(w, message)
 							return
 						}
 					}
@@ -66,10 +70,12 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodDelete {
 			id := channel_id(r.URL.Path)
 			if channel := linectl.GetChannel(id); channel == nil {
-				http.Error(w, "Channel 0 is not opened.", http.StatusInternalServerError)
+				message := fmt.Sprintf("Channel %d is not opened.", id)
+				http.Error(w, message, http.StatusInternalServerError)
 			} else {
+				message := fmt.Sprintf("Channel %d is closed.", id)
 				linectl.CloseChannel <- channel
-				fmt.Fprintf(w, "Channel 0 is closed.")
+				fmt.Fprintf(w, message)
 			}
 		} else {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
