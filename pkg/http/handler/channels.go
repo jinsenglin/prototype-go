@@ -25,26 +25,23 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 			if channel := linectl.GetChannel(0); channel == nil { // TODO: fix channel id
 				http.Error(w, "Channel 0 is not opened.", http.StatusInternalServerError)
 			} else {
-				flusher, ok := w.(http.Flusher)
+				if flusher, ok := w.(http.Flusher); ok {
+					w.Header().Set("Content-Type", "text/event-stream")
+					w.Header().Set("Cache-Control", "no-cache")
+					w.Header().Set("Connection", "keep-alive")
+					w.Header().Set("Access-Control-Allow-Origin", "*")
 
-				if !ok {
-					http.Error(w, "Streaming is unsupported!", http.StatusInternalServerError)
-					return
-				}
-
-				w.Header().Set("Content-Type", "text/event-stream")
-				w.Header().Set("Cache-Control", "no-cache")
-				w.Header().Set("Connection", "keep-alive")
-				w.Header().Set("Access-Control-Allow-Origin", "*")
-
-				messageChan := make(chan []byte)
-				channel.NewClients <- messageChan
-				defer func() {
-					channel.ClosingClients <- messageChan
-				}()
-				for {
-					fmt.Fprintf(w, "%s\n", <-messageChan)
-					flusher.Flush()
+					messageChan := make(chan []byte)
+					channel.NewClients <- messageChan
+					defer func() {
+						channel.ClosingClients <- messageChan
+					}()
+					for {
+						fmt.Fprintf(w, "%s\n", <-messageChan)
+						flusher.Flush()
+					}
+				} else {
+					http.Error(w, "Streaming is unsupported.", http.StatusBadRequest)
 				}
 			}
 		} else {
