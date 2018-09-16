@@ -3,18 +3,17 @@ package handler
 import (
 	"fmt"
 	"net/http"
-
-	"github.com/jinsenglin/prototype-go/pkg/model"
 )
 
 func ChatsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/chats/" {
 		if r.Method == http.MethodPost {
-			_channel := channels.Items[0] // TODO: use the real channel.
-
-			go _channel.Produce(&model.Chat{Message: r.FormValue("chat")})
-
-			http.Redirect(w, r, "/chats/new", 301)
+			if channel := linectl.GetChannel(0); channel == nil { // TODO: fix channel id
+				http.Error(w, "Channel 0 is not opened.", http.StatusInternalServerError)
+			} else {
+				channel.Notifier <- []byte(r.FormValue("chat"))
+				http.Redirect(w, r, "/chats/new", 301)
+			}
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			fmt.Fprintf(w, "Method Not Allowed")

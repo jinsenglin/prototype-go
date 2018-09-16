@@ -12,12 +12,7 @@ func main() {
 	line := line.Run()
 
 	// T0 :: system opens channel 0
-	ch0 := &model.Channel{
-		Id:             0,
-		Notifier:       make(chan []byte, 100),
-		NewClients:     make(chan chan []byte),
-		ClosingClients: make(chan chan []byte),
-		Clients:        make(map[chan []byte]bool)}
+	ch0 := model.NewChannel(0)
 	line.OpenChannel <- ch0
 
 	// T1 :: client a connects to channel 0
@@ -66,12 +61,7 @@ func main() {
 	time.Sleep(10e9)
 
 	// T6 :: system opens channel 1
-	ch1 := &model.Channel{
-		Id:             1,
-		Notifier:       make(chan []byte, 100),
-		NewClients:     make(chan chan []byte),
-		ClosingClients: make(chan chan []byte),
-		Clients:        make(map[chan []byte]bool)}
+	ch1 := model.NewChannel(1)
 	line.OpenChannel <- ch1
 
 	// T7 :: client c connects to channel 1

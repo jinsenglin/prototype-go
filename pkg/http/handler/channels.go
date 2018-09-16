@@ -5,35 +5,49 @@ import (
 	"net/http"
 	"regexp"
 
+	"github.com/jinsenglin/prototype-go/pkg/controller/line"
 	"github.com/jinsenglin/prototype-go/pkg/model"
 )
 
-var channels = model.Channels{Items: make([]*model.Channel, 1)} // TODO: choose a good capacity.
+var linectl = line.Run()
 
 func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/channels/" {
 		if r.Method == http.MethodPost {
-			// TODO: create a channel
-
-			_channel := &model.Channel{Chats: make([]*model.Chat, 0), Pipeline: make(chan *model.Chat)}
-			channels.Items[0] = _channel // TODO: use the real channel.
-			go _channel.Consume()        // TODO: exit goroutine when channel is deleted.
+			channel := model.NewChannel(0) // TODO: fix channel id
+			linectl.OpenChannel <- channel
+			fmt.Fprintf(w, "Channel 0 is created.")
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			fmt.Fprintf(w, "Method Not Allowed")
 		}
-	} else if re, _ := regexp.Compile("^/channels/[1-9]$"); re.MatchString(r.URL.Path) {
+	} else if re, _ := regexp.Compile("^/channels/[1-9]/chats$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodGet {
-			// TODO: check channel existence
-			// TODO: return a list of chats
+			if channel := linectl.GetChannel(0); channel == nil { // TODO: fix channel id
+				http.Error(w, "Channel 0 is not opened.", http.StatusInternalServerError)
+			} else {
+				flusher, ok := w.(http.Flusher)
 
-			// DEMO CODE
-			_channel := channels.Items[0]
-			_chats := _channel.Chats
-			for _, _chat := range _chats {
-				fmt.Fprintf(w, "%v\n", _chat)
+				if !ok {
+					http.Error(w, "Streaming is unsupported!", http.StatusInternalServerError)
+					return
+				}
+
+				w.Header().Set("Content-Type", "text/event-stream")
+				w.Header().Set("Cache-Control", "no-cache")
+				w.Header().Set("Connection", "keep-alive")
+				w.Header().Set("Access-Control-Allow-Origin", "*")
+
+				messageChan := make(chan []byte)
+				channel.NewClients <- messageChan
+				defer func() {
+					channel.ClosingClients <- messageChan
+				}()
+				for {
+					fmt.Fprintf(w, "%s\n", <-messageChan)
+					flusher.Flush()
+				}
 			}
-			// END DEMO
 		} else {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			fmt.Fprintf(w, "Method Not Allowed")

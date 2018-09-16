@@ -39,6 +39,11 @@ func (this *Line) closeChannel(ch *Channel) {
 	log.Println("Closed a channel")
 }
 
+func (this *Line) GetChannel(id int) (channel *Channel) {
+	channel = this.Channels[id]
+	return
+}
+
 func (this *Line) Dump() {
 	log.Println("Channels:")
 	for k, v := range this.Channels {
