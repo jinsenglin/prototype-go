@@ -18,8 +18,7 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 			linectl.OpenChannel <- channel
 			fmt.Fprintf(w, "Channel 0 is created.")
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else if re, _ := regexp.Compile("^/channels/[1-9]/chats$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodGet {
@@ -49,27 +48,23 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else if re, _ := regexp.Compile("^/channels/[1-9]/update$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodPut {
 			// TODO: check channel existence
 			// TODO: update a channel by adding a chat
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else if re, _ := regexp.Compile("^/channels/[1-9]/delete$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodDelete {
 			// TODO: check channel existence
 			// TODO: delete a channel
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "Page Not Found")
+		http.NotFound(w, r)
 	}
 }

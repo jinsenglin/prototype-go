@@ -12,8 +12,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 		// that we're at the root here.
 
 		if r.URL.Path != "/" {
-			w.WriteHeader(http.StatusNotFound)
-			fmt.Fprintf(w, "Page Not Found")
+			http.NotFound(w, r)
 		} else {
 			// e.g.,
 			// curl -v -X GET -L http://localhost:8080
@@ -22,7 +21,6 @@ func RootHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "Welcome")
 		}
 	} else {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		fmt.Fprintf(w, "Method Not Allowed")
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 	}
 }

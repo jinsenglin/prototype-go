@@ -26,11 +26,9 @@ func FilesAPIHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "Page Not Found")
+		http.NotFound(w, r)
 	}
 }

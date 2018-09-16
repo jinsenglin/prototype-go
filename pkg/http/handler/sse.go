@@ -47,12 +47,8 @@ type Broker struct {
 }
 
 func (broker *Broker) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-
-	if req.Method == http.MethodGet {
-		if req.URL.Path != "/sse/" {
-			rw.WriteHeader(http.StatusNotFound)
-			fmt.Fprintf(rw, "Page Not Found")
-		} else {
+	if req.URL.Path == "/sse/" {
+		if req.Method == http.MethodGet {
 			// e.g.,
 			// curl -v -X GET -L http://localhost:8080/sse/
 
@@ -99,13 +95,12 @@ func (broker *Broker) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 				// Flush the data immediatly instead of buffering it for later.
 				flusher.Flush()
 			}
-
+		} else {
+			http.Error(rw, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else {
-		rw.WriteHeader(http.StatusMethodNotAllowed)
-		fmt.Fprintf(rw, "Method Not Allowed")
+		http.NotFound(rw, req)
 	}
-
 }
 
 func (broker *Broker) listen() {

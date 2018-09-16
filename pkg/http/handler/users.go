@@ -44,8 +44,7 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			reqcontext.SetUserIndex(r.Context(), idx)
 			data.Create(idx, id, r.FormValue("name"))
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else if r.URL.Path == "/users/new" {
 		if r.Method == http.MethodGet {
@@ -55,8 +54,7 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			fmt.Fprintf(w, "<form>name: <input /><button>Create</button></form>")
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else if re, _ := regexp.Compile("^/users/[1-9]$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodGet {
@@ -67,8 +65,7 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			reqcontext.SetUserIndex(r.Context(), idx)
 			fmt.Fprintf(w, "%v", data.Get(idx))
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else if re, _ := regexp.Compile("^/users/[1-9]/edit$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodGet {
@@ -81,8 +78,7 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			fmt.Fprintf(w, "<form><div>id: %v</div>name: <input value='%v'/><button>Update</button></form>", u.Id, u.Name)
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else if re, _ := regexp.Compile("^/users/[1-9]/update$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodPut {
@@ -93,8 +89,7 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			reqcontext.SetUserIndex(r.Context(), idx)
 			data.Update(idx, r.FormValue("name"))
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else if re, _ := regexp.Compile("^/users/[1-9]/delete$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodDelete {
@@ -105,11 +100,9 @@ func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 			reqcontext.SetUserIndex(r.Context(), idx)
 			data.Delete(idx)
 		} else {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			fmt.Fprintf(w, "Method Not Allowed")
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	} else {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "Page Not Found")
+		http.NotFound(w, r)
 	}
 }
