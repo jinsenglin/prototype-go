@@ -37,10 +37,14 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 						channel.ClosingClients <- messageChan
 					}()
 					for {
-						// TODO: 1 when messageChan is closed
-						// TODO: 2 when channel.Context.Done()
-						fmt.Fprintf(w, "%s\n", <-messageChan)
-						flusher.Flush()
+						select {
+						case message := <-messageChan:
+							fmt.Fprintf(w, "%s\n", message)
+							flusher.Flush()
+						case <-channel.Context.Done():
+							fmt.Fprintf(w, "Channel 0 is closed.")
+							return
+						}
 					}
 				} else {
 					http.Error(w, "Streaming is unsupported.", http.StatusBadRequest)

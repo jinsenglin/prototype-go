@@ -27,12 +27,6 @@ func (this *Channel) Listen() {
 	for {
 		select {
 		case <-this.Context.Done():
-			// TODO
-			/*
-				for clientMessageChan, _ := range this.Clients {
-					close(clientMessageChan)
-				}
-			*/
 			log.Printf("Stopped a channel")
 			return
 
