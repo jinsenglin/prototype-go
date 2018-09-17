@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -14,9 +15,16 @@ func ChatsAPIHandler(w http.ResponseWriter, r *http.Request) {
 				message := fmt.Sprintf("Channel %d is not opened.", ch_id)
 				http.Error(w, message, http.StatusInternalServerError)
 			} else {
-				channel.Notifier <- []byte(r.FormValue("chat"))
-				path := fmt.Sprintf("/chats/new?ch_id=%d", ch_id)
-				http.Redirect(w, r, path, 301)
+				select {
+				case <-channel.Context.Done():
+					log.Println("Producer stops sending message due to channel closed.")
+					message := fmt.Sprintf("Channel %d is closed.", ch_id)
+					http.Error(w, message, http.StatusInternalServerError)
+				case channel.Notifier <- []byte(r.FormValue("chat")):
+					log.Println("Producer sends a message.")
+					path := fmt.Sprintf("/chats/new?ch_id=%d", ch_id)
+					http.Redirect(w, r, path, 301)
+				}
 			}
 		} else {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

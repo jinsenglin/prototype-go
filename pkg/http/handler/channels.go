@@ -46,17 +46,27 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 					messageChan := make(chan []byte)
 					channel.NewClients <- messageChan
 					defer func() {
-						log.Println("going to be offline because func return.")
-						channel.ClosingClients <- messageChan
-						log.Println("offline")
+						select {
+						case <-channel.Context.Done():
+							log.Printf("Consumer is forced to be disconnected from channel.")
+						case channel.ClosingClients <- messageChan:
+							log.Printf("Consumer says goodbay for disconnection from channel.")
+						}
+						log.Printf("Consumer has cleanup.")
 					}()
+
 					notify := w.(http.CloseNotifier).CloseNotify()
 					go func() {
 						<-notify
-						log.Println("going to be offline because client leave.")
-						channel.ClosingClients <- messageChan
+						select {
+						case <-channel.Context.Done():
+							log.Printf("Consumer is forced to be disconnected from channel.")
+						case channel.ClosingClients <- messageChan:
+							log.Printf("Consumer says goodbay for disconnection from channel.")
+						}
+						log.Printf("Consumer has cleanup.")
 					}()
-
+				LOOP:
 					for {
 						select {
 						case message := <-messageChan:
@@ -67,7 +77,7 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 							message := fmt.Sprintf("Channel %d is closed.", id)
 							fmt.Fprintf(w, message)
 							flusher.Flush()
-							return
+							break LOOP
 						}
 					}
 				} else {
