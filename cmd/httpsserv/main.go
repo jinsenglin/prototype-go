@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	log.Println("Try `curl -L -k https://localhost:8443`")
+	log.Println("Try `curl -k https://localhost:8443`")
 	route.RegisterRoutes()
 	log.Fatal(http.ListenAndServeTLS(":8443", "server.crt", "server.key", nil)) // TODO: refactor with TLS mutual authN. See httpsserv2
 }

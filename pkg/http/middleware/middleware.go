@@ -38,8 +38,6 @@ func BasicAuthLogged(next http.Handler) http.Handler {
 		// curl -u user:pass ...
 
 		auth := r.Header.Get("Authorization")
-		log.Println("Basic Auth", auth)
-
 		basic_auth := strings.SplitN(auth, " ", 2)
 		payload, _ := base64.StdEncoding.DecodeString(basic_auth[1])
 		user_pass := strings.SplitN(string(payload), ":", 2)
@@ -56,8 +54,9 @@ func TLSAuthLogged(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		certs := r.TLS.PeerCertificates
 		for _, cert := range certs {
-			log.Println("TLS Client Cert", cert.Subject)
+			log.Printf("TLS Auth CN: %s", cert.Subject.CommonName)
 		}
+
 		next.ServeHTTP(w, r)
 	})
 }

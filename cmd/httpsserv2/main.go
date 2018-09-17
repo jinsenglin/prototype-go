@@ -21,7 +21,7 @@ import (
 )
 
 func main() {
-	log.Println("Try `curl -L --cert pki/client.cert.pem --key pki/client.key.pem --cacert pki/ca.cert.pem https://localhost.localdomain:8443`")
+	log.Println("Try `curl --cert pki/client.cert.pem --key pki/client.key.pem --cacert pki/ca.cert.pem https://localhost.localdomain:8443`")
 	route.RegisterRoutes()
 
 	if caCert, err := ioutil.ReadFile("pki/ca.cert.pem"); err != nil {

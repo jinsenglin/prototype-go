@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	log.Println("Try `curl -L http://localhost:8080`")
+	log.Println("Try `curl http://localhost:8080`")
 	route.RegisterRoutes()
 	log.Fatal(http.ListenAndServe(":8080", nil)) // TODO: refactor with https. See httpsserv
 }
