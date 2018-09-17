@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -45,6 +46,12 @@ func main() {
 	// T3 :: client a sends a message to channel 0
 	log.Println("A client of id a is going to send 5 messages to the channel 0.")
 	go func(ch *model.Channel) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered in f", r) // ch.Notifier is closed.
+			}
+		}()
+
 		for i := 1; i < 5; i++ {
 			select {
 			case <-ch.Context.Done():
@@ -84,6 +91,12 @@ func main() {
 	// T5 :: client b sends a message to channel 0
 	log.Println("A client of id b is going to keep sending messages to the channel 0.")
 	go func(ch *model.Channel) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered in f", r) // ch.Notifier is closed.
+			}
+		}()
+
 		for {
 			select {
 			case <-ch.Context.Done():
@@ -132,6 +145,12 @@ func main() {
 	// T9 :: client c sends a message to channel 1
 	log.Println("A client of id c is going to send 5 messages to the channel 1.")
 	go func(ch *model.Channel) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered in f", r) // ch.Notifier is closed.
+			}
+		}()
+
 		for i := 1; i < 5; i++ {
 			select {
 			case <-ch.Context.Done():
@@ -171,6 +190,12 @@ func main() {
 	// T11 :: client d sends a message to channel 1
 	log.Println("A client of id d is going to keep sending messages to the channel 1.")
 	go func(ch *model.Channel) {
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("Recovered in f", r) // ch.Notifier is closed.
+			}
+		}()
+
 		for {
 			select {
 			case <-ch.Context.Done():

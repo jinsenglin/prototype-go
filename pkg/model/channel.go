@@ -63,7 +63,7 @@ func NewChannel(id int) (channel *Channel) {
 		Id:             id,
 		Context:        ctx,
 		Cancel:         cancel,
-		Notifier:       make(chan []byte, 100),
+		Notifier:       make(chan []byte, 2),
 		NewClients:     make(chan chan []byte),
 		ClosingClients: make(chan chan []byte),
 		Clients:        make(map[chan []byte]bool)}
