@@ -29,6 +29,17 @@ func Timed(fn func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter
 	}
 }
 
+// LogClientCert ...
+func TLSClientCertLogged(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		certs := r.TLS.PeerCertificates
+		for _, cert := range certs {
+			log.Println("HTTP CERTS", cert.Subject)
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 // WithSession ...
 func WithSession(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
