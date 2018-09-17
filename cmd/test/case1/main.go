@@ -31,16 +31,19 @@ func main() {
 			case ch.ClosingClients <- messageChan:
 				log.Printf("Consumer a says goodbay for disconnection from channel 0.")
 			}
+			log.Printf("Consumer a has cleanup.")
 		}()
+	LOOP:
 		for {
 			select {
 			case <-ch.Context.Done():
 				log.Printf("Consumer a stops receiving message due to channel 0 closed.")
-				return
+				break LOOP
 			case s := <-messageChan:
 				log.Printf("Consumer a receives a message %s", s)
 			}
 		}
+		log.Printf("Consumer a is going to have cleanup.")
 	}(ch0)
 
 	// T3 :: client a sends a message to channel 0
@@ -50,18 +53,20 @@ func main() {
 			if r := recover(); r != nil {
 				fmt.Println("Recovered in f", r) // ch.Notifier is closed.
 			}
+			log.Printf("Producer a has cleanup.")
 		}()
-
+	LOOP:
 		for i := 1; i < 5; i++ {
 			select {
 			case <-ch.Context.Done():
 				log.Println("Producer a stops sending message due to channel 0 closed.")
-				return
+				break LOOP
 			case ch.Notifier <- []byte("a"):
 				log.Println("Producer a sends a message a.")
 				time.Sleep(1e9)
 			}
 		}
+		log.Printf("Producer a is going to have cleanup.")
 	}(ch0)
 
 	// T4 :: client b connects to channel 0
@@ -76,16 +81,19 @@ func main() {
 			case ch.ClosingClients <- messageChan:
 				log.Printf("Consumer b says goodbay for disconnection from channel 0.")
 			}
+			log.Printf("Consumer b has cleanup.")
 		}()
+	LOOP:
 		for {
 			select {
 			case <-ch.Context.Done():
 				log.Printf("Consumer b stops receiving message due to channel 0 closed.")
-				return
+				break LOOP
 			case s := <-messageChan:
 				log.Printf("Consumer b receives a message %s", s)
 			}
 		}
+		log.Printf("Consumer b is going to have cleanup.")
 	}(ch0)
 
 	// T5 :: client b sends a message to channel 0
@@ -95,18 +103,20 @@ func main() {
 			if r := recover(); r != nil {
 				fmt.Println("Recovered in f", r) // ch.Notifier is closed.
 			}
+			log.Printf("Producer b has cleanup.")
 		}()
-
+	LOOP:
 		for {
 			select {
 			case <-ch.Context.Done():
 				log.Println("Producer b stops sending message due to channel 0 closed.")
-				return
+				break LOOP
 			case ch.Notifier <- []byte("b"):
 				log.Println("Producer b sends a message b.")
 				time.Sleep(1e9)
 			}
 		}
+		log.Printf("Producer b is going to have cleanup.")
 	}(ch0)
 
 	// T6 :: system is idle for a while
@@ -130,16 +140,19 @@ func main() {
 			case ch.ClosingClients <- messageChan:
 				log.Printf("Consumer c says goodbay for disconnection from channel 1.")
 			}
+			log.Printf("Consumer c has cleanup.")
 		}()
+	LOOP:
 		for {
 			select {
 			case <-ch.Context.Done():
 				log.Printf("Consumer c stops receiving message due to channel 1 closed.")
-				return
+				break LOOP
 			case s := <-messageChan:
 				log.Printf("Consumer c receives a message %s", s)
 			}
 		}
+		log.Printf("Consumer c is going to have cleanup.")
 	}(ch1)
 
 	// T9 :: client c sends a message to channel 1
@@ -149,18 +162,20 @@ func main() {
 			if r := recover(); r != nil {
 				fmt.Println("Recovered in f", r) // ch.Notifier is closed.
 			}
+			log.Printf("Producer c has cleanup.")
 		}()
-
+	LOOP:
 		for i := 1; i < 5; i++ {
 			select {
 			case <-ch.Context.Done():
 				log.Println("Producer c stops sending message due to channel 1 closed.")
-				return
+				break LOOP
 			case ch.Notifier <- []byte("c"):
 				log.Println("Producer c sends a message c.")
 				time.Sleep(1e9)
 			}
 		}
+		log.Printf("Producer c is going to have cleanup.")
 	}(ch1)
 
 	// T10 :: client d connects to channel 1
@@ -175,16 +190,19 @@ func main() {
 			case ch.ClosingClients <- messageChan:
 				log.Printf("Consumer d says goodbay for disconnection from channel 1.")
 			}
+			log.Printf("Consumer d has cleanup.")
 		}()
+	LOOP:
 		for {
 			select {
 			case <-ch.Context.Done():
 				log.Printf("Consumer d stops receiving message due to channel 1 closed.")
-				return
+				break LOOP
 			case s := <-messageChan:
 				log.Printf("Consumer d receives a message %s", s)
 			}
 		}
+		log.Printf("Consumer d is going to have cleanup.")
 	}(ch1)
 
 	// T11 :: client d sends a message to channel 1
@@ -194,18 +212,20 @@ func main() {
 			if r := recover(); r != nil {
 				fmt.Println("Recovered in f", r) // ch.Notifier is closed.
 			}
+			log.Printf("Producer d has cleanup.")
 		}()
-
+	LOOP:
 		for {
 			select {
 			case <-ch.Context.Done():
 				log.Println("Producer d stops sending message due to channel 1 closed.")
-				return
+				break LOOP
 			case ch.Notifier <- []byte("d"):
 				log.Println("Producer d sends a message d.")
 				time.Sleep(1e9)
 			}
 		}
+		log.Printf("Producer d is going to have cleanup.")
 	}(ch1)
 
 	// T12 :: system is idle for a while

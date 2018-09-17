@@ -27,10 +27,11 @@ func (this *Channel) Listen() {
 	for {
 		select {
 		case <-this.Context.Done():
-			for s := range this.ClosingClients {
-				delete(this.Clients, s)
-				log.Printf("Removed client. %d registered clients", len(this.Clients))
-			}
+			/*
+				for s := range this.ClosingClients {
+					delete(this.Clients, s)
+					log.Printf("Removed client. %d registered clients", len(this.Clients))
+				}*/
 			log.Printf("Stopped a channel")
 			return
 
@@ -52,7 +53,6 @@ func (this *Channel) Listen() {
 			for clientMessageChan, _ := range this.Clients {
 				clientMessageChan <- event
 			}
-			log.Printf("Broadcasted %s", event)
 		}
 	}
 }
