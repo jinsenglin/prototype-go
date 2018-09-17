@@ -59,7 +59,7 @@ func RegisterRoutes() {
 	http.Handle("/dummy", middleware.WithSession(http.HandlerFunc(handler.DummyHandler)))
 
 	// exactly '/dummy2'
-	http.Handle("/dummy2", middleware.TLSClientCertLogged(http.HandlerFunc(handler.DummyHandler)))
+	http.Handle("/dummy2", middleware.TLSAuthLogged(http.HandlerFunc(handler.DummyHandler)))
 
 	// exactly '/dummy3'
 	http.Handle("/dummy3", middleware.BasicAuthLogged(http.HandlerFunc(handler.DummyHandler)))

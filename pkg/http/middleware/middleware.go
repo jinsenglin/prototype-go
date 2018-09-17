@@ -51,8 +51,8 @@ func BasicAuthLogged(next http.Handler) http.Handler {
 	})
 }
 
-// TLSClientCertLogged ...
-func TLSClientCertLogged(next http.Handler) http.Handler {
+// TLSAuthLogged ...
+func TLSAuthLogged(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		certs := r.TLS.PeerCertificates
 		for _, cert := range certs {
