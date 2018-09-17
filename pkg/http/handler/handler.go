@@ -21,6 +21,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	// e.g.,
 	// curl http://localhost:8080/login
 
+	// Set authed Cookie
 	sid := strconv.Itoa(rand.Int())
 	expiration := time.Now().Add(365 * 24 * time.Hour)
 	c := http.Cookie{Name: "authed", Value: sid, Expires: expiration, Path: "/"}
@@ -34,6 +35,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	// e.g.,
 	// curl http://localhost:8080/logout
 
+	// Remove authed Cookie
 	sid := strconv.Itoa(rand.Int())
 	expiration := time.Now().Add(-365 * 24 * time.Hour)
 	c := http.Cookie{Name: "authed", Value: sid, Expires: expiration, Path: "/"}

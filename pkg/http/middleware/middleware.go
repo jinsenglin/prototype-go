@@ -34,6 +34,7 @@ func Timed(fn func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter
 // Authed ...
 func Authed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// cookie-based auth :: Check authed Cookie
 		if cookie, err := r.Cookie("authed"); err != nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		} else {
@@ -41,6 +42,8 @@ func Authed(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			log.Printf("cookie.Value = %v", cookie.Value)
 		}
+
+		// TODO: token-based auth :: Check authed Header
 	})
 }
 
