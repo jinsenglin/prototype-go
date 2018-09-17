@@ -31,6 +31,18 @@ func Timed(fn func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter
 	}
 }
 
+// Authed ...
+func Authed(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// TODO: check if authed
+		if authed := false; authed {
+			next.ServeHTTP(w, r)
+		} else {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		}
+	})
+}
+
 // BasicAuthLogged ...
 func BasicAuthLogged(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
