@@ -37,7 +37,7 @@ func Authed(next http.Handler) http.Handler {
 		if cookie, err := r.Cookie("authed"); err != nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		} else {
-			// TODO: more check
+			// TODO: more check against fake cookie.
 			next.ServeHTTP(w, r)
 			log.Printf("cookie.Value = %v", cookie.Value)
 		}
