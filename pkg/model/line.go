@@ -1,7 +1,6 @@
 package model
 
 import (
-	"context"
 	"log"
 )
 
@@ -23,17 +22,13 @@ func (this *Line) Listen() {
 }
 
 func (this *Line) openChannel(ch *Channel) {
-	ch.Context, ch.Cancel = context.WithCancel(context.Background())
-
 	go ch.Listen()
-
 	this.Channels[ch.Id] = ch
 	log.Println("Opened a channel")
 }
 
 func (this *Line) closeChannel(ch *Channel) {
 	ch.Cancel()
-
 	delete(this.Channels, ch.Id)
 	log.Println("Closed a channel")
 }

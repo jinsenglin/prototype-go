@@ -20,19 +20,35 @@ func main() {
 		messageChan := make(chan []byte)
 		ch.NewClients <- messageChan
 		defer func() {
-			ch.ClosingClients <- messageChan
+			select {
+			case <-ch.Context.Done():
+				log.Printf("Client a receives a done signal from channel 0.")
+			case ch.ClosingClients <- messageChan:
+				log.Printf("Client a is leaving.")
+			}
 		}()
 		for {
-			log.Printf("Client a received %s", <-messageChan)
+			select {
+			case <-ch.Context.Done():
+				log.Printf("Client a receives a done signal from channel 0.")
+				return
+			case s := <-messageChan:
+				log.Printf("Client a receives a message %s", s)
+			}
 		}
 	}(ch0)
 
 	// T2 :: client a sends a message to channel 0
 	go func(ch *model.Channel) {
 		for i := 1; i < 5; i++ {
-			ch.Notifier <- []byte("a")
-			log.Println("Sent a")
-			time.Sleep(1e9)
+			select {
+			case <-ch.Context.Done():
+				log.Println("Client a stops sending message due to channel 0 closed.")
+				return
+			case ch.Notifier <- []byte("a"):
+				log.Println("Client a sends a message a.")
+				time.Sleep(1e9)
+			}
 		}
 	}(ch0)
 
@@ -41,19 +57,35 @@ func main() {
 		messageChan := make(chan []byte)
 		ch.NewClients <- messageChan
 		defer func() {
-			ch.ClosingClients <- messageChan
+			select {
+			case <-ch.Context.Done():
+				log.Printf("Client b receives a done signal from channel 0.")
+			case ch.ClosingClients <- messageChan:
+				log.Printf("Client b is leaving.")
+			}
 		}()
 		for {
-			log.Printf("Client b received %s", <-messageChan)
+			select {
+			case <-ch.Context.Done():
+				log.Printf("Client b receives a done signal from channel 0.")
+				return
+			case s := <-messageChan:
+				log.Printf("Client b receives a message %s", s)
+			}
 		}
 	}(ch0)
 
 	// T4 :: client b sends a message to channel 0
 	go func(ch *model.Channel) {
 		for i := 1; i < 5; i++ {
-			ch.Notifier <- []byte("b")
-			log.Println("Sent b")
-			time.Sleep(1e9)
+			select {
+			case <-ch.Context.Done():
+				log.Println("Client b stops sending message due to channel 0 closed.")
+				return
+			case ch.Notifier <- []byte("b"):
+				log.Println("Client b sends a message b.")
+				time.Sleep(1e9)
+			}
 		}
 	}(ch0)
 
@@ -69,19 +101,35 @@ func main() {
 		messageChan := make(chan []byte)
 		ch.NewClients <- messageChan
 		defer func() {
-			ch.ClosingClients <- messageChan
+			select {
+			case <-ch.Context.Done():
+				log.Printf("Client c receives a done signal from channel 1.")
+			case ch.ClosingClients <- messageChan:
+				log.Printf("Client c is leaving.")
+			}
 		}()
 		for {
-			log.Printf("Client c received %s", <-messageChan)
+			select {
+			case <-ch.Context.Done():
+				log.Printf("Client c receives a done signal from channel 1.")
+				return
+			case s := <-messageChan:
+				log.Printf("Client c receives a message %s", s)
+			}
 		}
 	}(ch1)
 
 	// T8 :: client c sends a message to channel 1
 	go func(ch *model.Channel) {
 		for i := 1; i < 5; i++ {
-			ch.Notifier <- []byte("c")
-			log.Println("Sent c")
-			time.Sleep(1e9)
+			select {
+			case <-ch.Context.Done():
+				log.Println("Client c stops sending message due to channel 1 closed.")
+				return
+			case ch.Notifier <- []byte("c"):
+				log.Println("Client c sends a message c.")
+				time.Sleep(1e9)
+			}
 		}
 	}(ch1)
 
@@ -90,19 +138,35 @@ func main() {
 		messageChan := make(chan []byte)
 		ch.NewClients <- messageChan
 		defer func() {
-			ch.ClosingClients <- messageChan
+			select {
+			case <-ch.Context.Done():
+				log.Printf("Client d receives a done signal from channel 1.")
+			case ch.ClosingClients <- messageChan:
+				log.Printf("Client d is leaving.")
+			}
 		}()
 		for {
-			log.Printf("Client d received %s", <-messageChan)
+			select {
+			case <-ch.Context.Done():
+				log.Printf("Client d receives a done signal from channel 1.")
+				return
+			case s := <-messageChan:
+				log.Printf("Client d receives a message %s", s)
+			}
 		}
 	}(ch1)
 
 	// T10 :: client d sends a message to channel 1
 	go func(ch *model.Channel) {
 		for i := 1; i < 5; i++ {
-			ch.Notifier <- []byte("d")
-			log.Println("Sent d")
-			time.Sleep(1e9)
+			select {
+			case <-ch.Context.Done():
+				log.Println("Client d stops sending message due to channel 1 closed.")
+				return
+			case ch.Notifier <- []byte("d"):
+				log.Println("Client d sends a message d.")
+				time.Sleep(1e9)
+			}
 		}
 	}(ch1)
 
