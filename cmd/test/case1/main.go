@@ -20,31 +20,31 @@ func main() {
 	line.OpenChannel <- ch0
 
 	// T2 :: client a connects to channel 0
-	log.Println("A client of id a is going to connect to the channel 0.")
+	log.Println("Consumer a is going to connect to the channel 0.")
 	go func(ch *model.Channel) {
 		messageChan := make(chan []byte)
 		ch.NewClients <- messageChan
 		defer func() {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client a is forced to be disconnected from channel 0.")
+				log.Printf("Consumer a is forced to be disconnected from channel 0.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Client a is going to disconnect from channel 0.")
+				log.Printf("Consumer a is going to disconnect from channel 0.")
 			}
 		}()
 		for {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client a stops receiving message due to channel 0 closed.")
+				log.Printf("Consumer a stops receiving message due to channel 0 closed.")
 				return
 			case s := <-messageChan:
-				log.Printf("Client a receives a message %s", s)
+				log.Printf("Consumer a receives a message %s", s)
 			}
 		}
 	}(ch0)
 
 	// T3 :: client a sends a message to channel 0
-	log.Println("A client of id a is going to send 5 messages to the channel 0.")
+	log.Println("Producer a is going to send 5 messages to the channel 0.")
 	go func(ch *model.Channel) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -55,41 +55,41 @@ func main() {
 		for i := 1; i < 5; i++ {
 			select {
 			case <-ch.Context.Done():
-				log.Println("Client a stops sending message due to channel 0 closed.")
+				log.Println("Producer a stops sending message due to channel 0 closed.")
 				return
 			case ch.Notifier <- []byte("a"):
-				log.Println("Client a sends a message a.")
+				log.Println("Producer a sends a message a.")
 				time.Sleep(1e9)
 			}
 		}
 	}(ch0)
 
 	// T4 :: client b connects to channel 0
-	log.Println("A client of id b is going to connect to the channel 0.")
+	log.Println("Consumer b is going to connect to the channel 0.")
 	go func(ch *model.Channel) {
 		messageChan := make(chan []byte)
 		ch.NewClients <- messageChan
 		defer func() {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client b is forced to be disconnected from channel 0.")
+				log.Printf("Consumer b is forced to be disconnected from channel 0.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Client b is going to disconnect from channel 0.")
+				log.Printf("Consumer b is going to disconnect from channel 0.")
 			}
 		}()
 		for {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client b stops receiving message due to channel 0 closed.")
+				log.Printf("Consumer b stops receiving message due to channel 0 closed.")
 				return
 			case s := <-messageChan:
-				log.Printf("Client b receives a message %s", s)
+				log.Printf("Consumer b receives a message %s", s)
 			}
 		}
 	}(ch0)
 
 	// T5 :: client b sends a message to channel 0
-	log.Println("A client of id b is going to keep sending messages to the channel 0.")
+	log.Println("Producer b is going to keep sending messages to the channel 0.")
 	go func(ch *model.Channel) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -100,10 +100,10 @@ func main() {
 		for {
 			select {
 			case <-ch.Context.Done():
-				log.Println("Client b stops sending message due to channel 0 closed.")
+				log.Println("Producer b stops sending message due to channel 0 closed.")
 				return
 			case ch.Notifier <- []byte("b"):
-				log.Println("Client b sends a message b.")
+				log.Println("Producer b sends a message b.")
 				time.Sleep(1e9)
 			}
 		}
@@ -119,31 +119,31 @@ func main() {
 	line.OpenChannel <- ch1
 
 	// T8 :: client c connects to channel 1
-	log.Println("A client of id c is going to connect to the channel 1.")
+	log.Println("Consumer c is going to connect to the channel 1.")
 	go func(ch *model.Channel) {
 		messageChan := make(chan []byte)
 		ch.NewClients <- messageChan
 		defer func() {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client c is forced to be disconnected from channel 1.")
+				log.Printf("Consumer c is forced to be disconnected from channel 1.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Client c is going to disconnect from channel 1.")
+				log.Printf("Consumer c is going to disconnect from channel 1.")
 			}
 		}()
 		for {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client c stops receiving message due to channel 1 closed.")
+				log.Printf("Consumer c stops receiving message due to channel 1 closed.")
 				return
 			case s := <-messageChan:
-				log.Printf("Client c receives a message %s", s)
+				log.Printf("Consumer c receives a message %s", s)
 			}
 		}
 	}(ch1)
 
 	// T9 :: client c sends a message to channel 1
-	log.Println("A client of id c is going to send 5 messages to the channel 1.")
+	log.Println("Producer c is going to send 5 messages to the channel 1.")
 	go func(ch *model.Channel) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -154,41 +154,41 @@ func main() {
 		for i := 1; i < 5; i++ {
 			select {
 			case <-ch.Context.Done():
-				log.Println("Client c stops sending message due to channel 1 closed.")
+				log.Println("Producer c stops sending message due to channel 1 closed.")
 				return
 			case ch.Notifier <- []byte("c"):
-				log.Println("Client c sends a message c.")
+				log.Println("Producer c sends a message c.")
 				time.Sleep(1e9)
 			}
 		}
 	}(ch1)
 
 	// T10 :: client d connects to channel 1
-	log.Println("A client of id d is going to connect to the channel 1.")
+	log.Println("Consumer d is going to connect to the channel 1.")
 	go func(ch *model.Channel) {
 		messageChan := make(chan []byte)
 		ch.NewClients <- messageChan
 		defer func() {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client d is forced to be disconnected from channel 1.")
+				log.Printf("Consumer d is forced to be disconnected from channel 1.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Client d is going to disconnect from channel 1.")
+				log.Printf("Consumer d is going to disconnect from channel 1.")
 			}
 		}()
 		for {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client d stops receiving message due to channel 1 closed.")
+				log.Printf("Consumer d stops receiving message due to channel 1 closed.")
 				return
 			case s := <-messageChan:
-				log.Printf("Client d receives a message %s", s)
+				log.Printf("Consumer d receives a message %s", s)
 			}
 		}
 	}(ch1)
 
 	// T11 :: client d sends a message to channel 1
-	log.Println("A client of id d is going to keep sending messages to the channel 1.")
+	log.Println("Producer d is going to keep sending messages to the channel 1.")
 	go func(ch *model.Channel) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -199,10 +199,10 @@ func main() {
 		for {
 			select {
 			case <-ch.Context.Done():
-				log.Println("Client d stops sending message due to channel 1 closed.")
+				log.Println("Producer d stops sending message due to channel 1 closed.")
 				return
 			case ch.Notifier <- []byte("d"):
-				log.Println("Client d sends a message d.")
+				log.Println("Producer d sends a message d.")
 				time.Sleep(1e9)
 			}
 		}
