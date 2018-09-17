@@ -26,9 +26,9 @@ func main() {
 		defer func() {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client a receives a done signal from channel 0.")
+				log.Printf("Client a is forced to be disconnected from channel 0.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Client a is leaving.")
+				log.Printf("Client a is going to disconnect from channel 0.")
 			}
 		}()
 		for {
@@ -65,15 +65,15 @@ func main() {
 		defer func() {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client b stops receiving message due to channel 0 closed.")
+				log.Printf("Client b is forced to be disconnected from channel 0.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Client b is leaving.")
+				log.Printf("Client b is going to disconnect from channel 0.")
 			}
 		}()
 		for {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client b receives a done signal from channel 0.")
+				log.Printf("Client b stops receiving message due to channel 0 closed.")
 				return
 			case s := <-messageChan:
 				log.Printf("Client b receives a message %s", s)
@@ -113,9 +113,9 @@ func main() {
 		defer func() {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client c receives a done signal from channel 1.")
+				log.Printf("Client c is forced to be disconnected from channel 1.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Client c is leaving.")
+				log.Printf("Client c is going to disconnect from channel 1.")
 			}
 		}()
 		for {
@@ -152,9 +152,9 @@ func main() {
 		defer func() {
 			select {
 			case <-ch.Context.Done():
-				log.Printf("Client d receives a done signal from channel 1.")
+				log.Printf("Client d is forced to be disconnected from channel 1.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Client d is leaving.")
+				log.Printf("Client d is going to disconnect from channel 1.")
 			}
 		}()
 		for {
