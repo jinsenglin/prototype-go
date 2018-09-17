@@ -55,7 +55,21 @@ func BasicAuthLogged(next http.Handler) http.Handler {
 		user_pass := strings.SplitN(string(payload), ":", 2)
 		user := user_pass[0]
 		pass := user_pass[1]
-		log.Printf("user: %s | pass: %s", user, pass)
+		log.Printf("Basic Auth user: %s | pass: %s", user, pass)
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+// FormAuthLogged ...
+func FormAuthLogged(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// e.g.,
+		// curl -F 'user=user' -F 'pass=pass' ...
+
+		user := r.FormValue("user")
+		pass := r.FormValue("pass")
+		log.Printf("Form Auth user: %s | pass: %s", user, pass)
 
 		next.ServeHTTP(w, r)
 	})
@@ -66,7 +80,7 @@ func TLSAuthLogged(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		certs := r.TLS.PeerCertificates
 		for _, cert := range certs {
-			log.Printf("TLS Auth CN: %s", cert.Subject.CommonName)
+			log.Printf("TLS Auth common name: %s", cert.Subject.CommonName)
 		}
 
 		next.ServeHTTP(w, r)

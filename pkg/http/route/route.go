@@ -67,4 +67,7 @@ func RegisterRoutes() {
 	// exactly '/dummy4'
 	http.Handle("/dummy4", middleware.Authed(http.HandlerFunc(handler.DummyHandler)))
 
+	// exactly '/dummy5'
+	http.Handle("/dummy5", middleware.FormAuthLogged(http.HandlerFunc(handler.DummyHandler)))
+
 }
