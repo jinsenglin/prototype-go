@@ -55,6 +55,12 @@ func RegisterRoutes() {
 		*/
 	})
 
+	// exactly 'login'
+	http.HandleFunc("/login", handler.LoginHandler)
+
+	// exactly 'logout'
+	http.HandleFunc("/logout", handler.LogoutHandler)
+
 	// exactly '/dummy'
 	http.Handle("/dummy", middleware.WithSession(http.HandlerFunc(handler.DummyHandler)))
 

@@ -34,11 +34,12 @@ func Timed(fn func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter
 // Authed ...
 func Authed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// TODO: check if authed
-		if authed := false; authed {
-			next.ServeHTTP(w, r)
-		} else {
+		if cookie, err := r.Cookie("authed"); err != nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		} else {
+			// TODO: more check
+			next.ServeHTTP(w, r)
+			log.Printf("cookie.Value = %v", cookie.Value)
 		}
 	})
 }
