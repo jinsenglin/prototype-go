@@ -29,7 +29,7 @@ func main() {
 			case <-ch.Context.Done():
 				log.Printf("Consumer a is forced to be disconnected from channel 0.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Consumer a is going to disconnect from channel 0.")
+				log.Printf("Consumer a says goodbay for disconnection from channel 0.")
 			}
 		}()
 		for {
@@ -74,7 +74,7 @@ func main() {
 			case <-ch.Context.Done():
 				log.Printf("Consumer b is forced to be disconnected from channel 0.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Consumer b is going to disconnect from channel 0.")
+				log.Printf("Consumer b says goodbay for disconnection from channel 0.")
 			}
 		}()
 		for {
@@ -128,7 +128,7 @@ func main() {
 			case <-ch.Context.Done():
 				log.Printf("Consumer c is forced to be disconnected from channel 1.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Consumer c is going to disconnect from channel 1.")
+				log.Printf("Consumer c says goodbay for disconnection from channel 1.")
 			}
 		}()
 		for {
@@ -173,7 +173,7 @@ func main() {
 			case <-ch.Context.Done():
 				log.Printf("Consumer d is forced to be disconnected from channel 1.")
 			case ch.ClosingClients <- messageChan:
-				log.Printf("Consumer d is going to disconnect from channel 1.")
+				log.Printf("Consumer d says goodbay for disconnection from channel 1.")
 			}
 		}()
 		for {
