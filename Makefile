@@ -1,5 +1,5 @@
 run:
-	go run main.go
+	go run -race main.go
 
 run-cmd-ls:
 	go build -o out/ls cmd/ls/*.go
