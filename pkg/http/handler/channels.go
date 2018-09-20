@@ -66,20 +66,14 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 						}
 						log.Printf("Consumer has cleanup.")
 					}()
-				LOOP:
-					for {
-						select {
-						case message := <-messageChan:
-							fmt.Fprintf(w, "%s\n", message)
-							flusher.Flush()
-						case <-channel.Context.Done():
-							log.Println("going to be offline because server close.")
-							message := fmt.Sprintf("Channel %d is closed.", id)
-							fmt.Fprintf(w, message)
-							flusher.Flush()
-							break LOOP
-						}
+
+					for message := range messageChan {
+						fmt.Fprintf(w, "%s\n", message)
+						flusher.Flush()
 					}
+					message := fmt.Sprintf("Channel %d is closed.", id)
+					fmt.Fprintf(w, message)
+					flusher.Flush()
 				} else {
 					http.Error(w, "Streaming is unsupported.", http.StatusBadRequest)
 				}

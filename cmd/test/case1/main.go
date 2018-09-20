@@ -33,17 +33,10 @@ func main() {
 			}
 			log.Printf("Consumer a has cleanup.")
 		}()
-	LOOP:
-		for {
-			select {
-			case <-ch.Context.Done():
-				log.Printf("Consumer a stops receiving message due to channel 0 closed.")
-				break LOOP
-			case s := <-messageChan:
-				log.Printf("Consumer a receives a message %s", s)
-			}
+		for s := range messageChan {
+			log.Printf("Consumer a receives a message %s", s)
 		}
-		log.Printf("Consumer a is going to have cleanup.")
+		log.Printf("Consumer a receives a notice saying channel closed.")
 	}(ch0)
 
 	// T3 :: client a sends a message to channel 0
@@ -83,17 +76,10 @@ func main() {
 			}
 			log.Printf("Consumer b has cleanup.")
 		}()
-	LOOP:
-		for {
-			select {
-			case <-ch.Context.Done():
-				log.Printf("Consumer b stops receiving message due to channel 0 closed.")
-				break LOOP
-			case s := <-messageChan:
-				log.Printf("Consumer b receives a message %s", s)
-			}
+		for s := range messageChan {
+			log.Printf("Consumer b receives a message %s", s)
 		}
-		log.Printf("Consumer b is going to have cleanup.")
+		log.Printf("Consumer b receives a notice saying channel closed.")
 	}(ch0)
 
 	// T5 :: client b sends a message to channel 0
@@ -142,17 +128,10 @@ func main() {
 			}
 			log.Printf("Consumer c has cleanup.")
 		}()
-	LOOP:
-		for {
-			select {
-			case <-ch.Context.Done():
-				log.Printf("Consumer c stops receiving message due to channel 1 closed.")
-				break LOOP
-			case s := <-messageChan:
-				log.Printf("Consumer c receives a message %s", s)
-			}
+		for s := range messageChan {
+			log.Printf("Consumer c receives a message %s", s)
 		}
-		log.Printf("Consumer c is going to have cleanup.")
+		log.Printf("Consumer c receives a notice saying channel closed.")
 	}(ch1)
 
 	// T9 :: client c sends a message to channel 1
@@ -192,17 +171,10 @@ func main() {
 			}
 			log.Printf("Consumer d has cleanup.")
 		}()
-	LOOP:
-		for {
-			select {
-			case <-ch.Context.Done():
-				log.Printf("Consumer d stops receiving message due to channel 1 closed.")
-				break LOOP
-			case s := <-messageChan:
-				log.Printf("Consumer d receives a message %s", s)
-			}
+		for s := range messageChan {
+			log.Printf("Consumer d receives a message %s", s)
 		}
-		log.Printf("Consumer d is going to have cleanup.")
+		log.Printf("Consumer d receives a notice saying channel closed.")
 	}(ch1)
 
 	// T11 :: client d sends a message to channel 1

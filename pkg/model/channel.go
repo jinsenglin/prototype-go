@@ -24,15 +24,15 @@ type Channel struct {
 }
 
 func (this *Channel) Listen() {
+	log.Printf("Started listening")
 	for {
 		select {
 		case <-this.Context.Done():
-			/*
-				for s := range this.ClosingClients {
-					delete(this.Clients, s)
-					log.Printf("Removed client. %d registered clients", len(this.Clients))
-				}*/
-			log.Printf("Stopped a channel")
+			// Notify all connected clients
+			for clientMessageChan, _ := range this.Clients {
+				close(clientMessageChan)
+			}
+			log.Printf("Stopped listening")
 			return
 
 		case s := <-this.NewClients:
