@@ -48,3 +48,9 @@ run-exercise-loop:
 
 test-exercise-loop:
 	go test -race github.com/jinsenglin/prototype-go/cmd/go-tour/exercise/loop-and-functions
+
+run-exercise-slices:
+	go run -race cmd/go-tour/exercise/slices/main.go
+
+test-exercise-slices:
+	go test -race github.com/jinsenglin/prototype-go/cmd/go-tour/exercise/slices
