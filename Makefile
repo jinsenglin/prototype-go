@@ -42,3 +42,9 @@ run-cmd-proxyserv5:
 
 run-cmd-proxyserv6:
 	go run -race cmd/proxyserv6/main.go
+
+run-exercise-loop:
+	go run -race cmd/go-tour/exercise/loop-and-functions/main.go
+
+test-exercise-loop:
+	go test -race github.com/jinsenglin/prototype-go/cmd/go-tour/exercise/loop-and-functions
