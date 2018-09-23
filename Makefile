@@ -57,3 +57,6 @@ test-exercise-slices:
 
 run-exercise-maps:
 	go run -race cmd/go-tour/exercise/maps/main.go
+
+run-exercise-fibonacci-closure:
+	go run -race cmd/go-tour/exercise/fibonacci-closure/main.go
