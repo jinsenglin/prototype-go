@@ -54,3 +54,6 @@ run-exercise-slices:
 
 test-exercise-slices:
 	go test -race github.com/jinsenglin/prototype-go/cmd/go-tour/exercise/slices
+
+run-exercise-maps:
+	go run -race cmd/go-tour/exercise/maps/main.go
