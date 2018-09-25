@@ -63,3 +63,6 @@ run-exercise-fibonacci-closure:
 
 run-exercise-stringers:
 	go run -race cmd/go-tour/exercise/stringers/main.go
+
+run-exercise-errors:
+	go run -race cmd/go-tour/exercise/errors/main.go
