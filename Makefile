@@ -60,3 +60,6 @@ run-exercise-maps:
 
 run-exercise-fibonacci-closure:
 	go run -race cmd/go-tour/exercise/fibonacci-closure/main.go
+
+run-exercise-stringers:
+	go run -race cmd/go-tour/exercise/stringers/main.go
