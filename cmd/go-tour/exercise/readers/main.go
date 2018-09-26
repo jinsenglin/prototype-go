@@ -2,6 +2,7 @@ package main
 
 import "golang.org/x/tour/reader"
 
+// MyReader ...
 type MyReader struct{}
 
 // a Read([]byte) (int, error) method to MyReader.
