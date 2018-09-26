@@ -75,3 +75,6 @@ run-exercise-iot13reader:
 
 run-exercise-images:
 	go run -race cmd/go-tour/exercise/images/main.go
+
+run-exercise-equivalent-binary-tree:
+	go run -race cmd/go-tour/exercise/equivalent-binary-tree/main.go
