@@ -71,4 +71,7 @@ run-exercise-readers:
 	go run -race cmd/go-tour/exercise/readers/main.go
 
 run-exercise-iot13reader:
-	go run -race cmd/go-tour/exercise/iot13reader/main.go	
+	go run -race cmd/go-tour/exercise/iot13reader/main.go
+
+run-exercise-images:
+	go run -race cmd/go-tour/exercise/images/main.go
