@@ -78,3 +78,6 @@ run-exercise-images:
 
 run-exercise-equivalent-binary-tree:
 	go run -race cmd/go-tour/exercise/equivalent-binary-tree/main.go
+
+run-exercise-web-crawler:
+	go run -race cmd/go-tour/exercise/web-crawler/main.go
