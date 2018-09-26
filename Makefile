@@ -66,3 +66,6 @@ run-exercise-stringers:
 
 run-exercise-errors:
 	go run -race cmd/go-tour/exercise/errors/main.go
+
+run-exercise-readers:
+	go run -race cmd/go-tour/exercise/readers/main.go
