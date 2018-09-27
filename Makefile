@@ -16,6 +16,9 @@ run-test-case1:
 	go build -race -o out/test-case1 cmd/test/case1/*.go
 	./out/test-case1
 
+build-cmd-httpserv-debug:
+	go build -race -gcflags "-N -l" -o out/httpserv-debug cmd/httpserv/main.go
+
 run-cmd-httpserv:
 	go run -race cmd/httpserv/main.go
 
