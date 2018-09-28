@@ -1,6 +1,10 @@
 run:
 	go run -race main.go
 
+run-cmd-1m-console:
+	go build -race -o out/1m-console cmd/1m-console/*.go
+	./out/1m-console
+
 run-cmd-ls:
 	go build -race -o out/ls cmd/ls/*.go
 	./out/ls / /non-exist
