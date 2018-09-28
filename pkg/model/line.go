@@ -18,12 +18,14 @@ import (
 	"log"
 )
 
+// Line ...
 type Line struct {
 	Channels     map[int]*Channel
 	OpenChannel  chan *Channel
 	CloseChannel chan *Channel
 }
 
+// Listen ...
 func (this *Line) Listen() {
 	for {
 		select {
@@ -47,11 +49,13 @@ func (this *Line) closeChannel(ch *Channel) {
 	log.Println("Closed a channel")
 }
 
+// GetChannel ...
 func (this *Line) GetChannel(id int) (channel *Channel) {
 	channel = this.Channels[id]
 	return
 }
 
+// Dump ...
 func (this *Line) Dump() {
 	log.Println("Channels:")
 	for k, v := range this.Channels {
@@ -59,6 +63,7 @@ func (this *Line) Dump() {
 	}
 }
 
+// NewLine ...
 func NewLine() (line *Line) {
 	line = &Line{
 		Channels:     make(map[int]*Channel),

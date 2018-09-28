@@ -12,6 +12,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+// Package model ...
 package model
 
 import (
@@ -19,6 +20,7 @@ import (
 	"sync"
 )
 
+// User ...
 type User struct {
 	Id    int
 	Name  string
@@ -27,6 +29,7 @@ type User struct {
 	Map   map[string]int // for demo of deep copy
 }
 
+// Copy ...
 func (this *User) Copy() (that User) {
 	// deep copy
 	b, _ := json.Marshal(this)
@@ -34,11 +37,13 @@ func (this *User) Copy() (that User) {
 	return
 }
 
+// Users ...
 type Users struct {
 	Items [9]User
 	mux   sync.Mutex
 }
 
+// List ...
 func (this *Users) List() (items []User) {
 	this.mux.Lock()
 	items = this.Items[:]
@@ -47,6 +52,7 @@ func (this *Users) List() (items []User) {
 	return
 }
 
+// Get ...
 func (this *Users) Get(idx int) (item User) {
 	this.mux.Lock()
 	item = this.Items[idx]
@@ -55,6 +61,7 @@ func (this *Users) Get(idx int) (item User) {
 	return
 }
 
+// Create ...
 func (this *Users) Create(idx int, id int, name string) {
 	this.mux.Lock()
 	this.Items[idx].Id = id
@@ -62,12 +69,14 @@ func (this *Users) Create(idx int, id int, name string) {
 	this.mux.Unlock()
 }
 
+// Update ...
 func (this *Users) Update(idx int, name string) {
 	this.mux.Lock()
 	this.Items[idx].Name = name
 	this.mux.Unlock()
 }
 
+// Delete ...
 func (this *Users) Delete(idx int) {
 	this.mux.Lock()
 	this.Items[idx].Id = 0

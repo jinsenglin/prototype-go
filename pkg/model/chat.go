@@ -14,6 +14,7 @@
 
 package model
 
+// Chat ...
 type Chat struct {
 	Message string
 }

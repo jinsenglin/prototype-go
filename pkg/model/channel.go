@@ -19,6 +19,7 @@ import (
 	"log"
 )
 
+// Channel ...
 type Channel struct {
 	Id      int
 	Context context.Context
@@ -37,6 +38,7 @@ type Channel struct {
 	Clients map[chan []byte]bool
 }
 
+// Listen ...
 func (this *Channel) Listen() {
 	log.Printf("Started listening")
 	for {
@@ -71,6 +73,7 @@ func (this *Channel) Listen() {
 	}
 }
 
+// NewChannel ...
 func NewChannel(id int) (channel *Channel) {
 	ctx, cancel := context.WithCancel(context.Background())
 	channel = &Channel{
