@@ -12,6 +12,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+// Package util ...
 package util
 
 import (
@@ -20,12 +21,14 @@ import (
 	"github.com/jinsenglin/prototype-go/pkg/model"
 )
 
+// CopyIntSlice ...
 func CopyIntSlice(src []int) []int {
 	dst := make([]int, len(src))
 	copy(dst, src)
 	return dst
 }
 
+// CopyStringIntMap ...
 func CopyStringIntMap(src map[string]int) map[string]int {
 	dst := make(map[string]int)
 	for k, v := range src {
@@ -34,6 +37,7 @@ func CopyStringIntMap(src map[string]int) map[string]int {
 	return dst
 }
 
+// CopyStruct ...
 func CopyStruct(src interface{}) interface{} {
 	b, _ := json.Marshal(src)
 
