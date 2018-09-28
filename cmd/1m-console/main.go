@@ -31,8 +31,12 @@ func init() {
 
 func up() {
 	// TODO: launch a GKE cluster
+	// No sdk to do this. Use gcloud command-line tool instead.
+
 	// TODO: wait GKE cluster ready to use
+
 	// TODO: deploy workload to GKE cluster
+	// No sdk to do this. Use kubectl command-line tool instead.
 }
 
 func more() {
