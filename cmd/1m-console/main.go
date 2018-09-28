@@ -30,15 +30,18 @@ func init() {
 }
 
 func up() {
-	// TODO
+	// TODO: launch a GKE cluster
+	// TODO: wait GKE cluster ready to use
+	// TODO: deploy workload to GKE cluster
 }
 
 func more() {
-	// TODO
+	// TODO: resize GKE cluster by adding one more node
+	// TODO: reshape workload by adding more consumer pods
 }
 
 func down() {
-	// TODO
+	// TODO: shutdown GKE cluster
 }
 
 func main() {
