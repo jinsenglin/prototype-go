@@ -3,7 +3,7 @@ run:
 
 run-cmd-1m-console:
 	go build -race -o out/1m-console cmd/1m-console/*.go
-	./out/1m-console
+	./out/1m-console -h
 
 run-cmd-ls:
 	go build -race -o out/ls cmd/ls/*.go
