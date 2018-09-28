@@ -84,3 +84,7 @@ run-exercise-equivalent-binary-tree:
 
 run-exercise-web-crawler:
 	go run -race cmd/go-tour/exercise/web-crawler/main.go
+
+run-godoc:
+	echo "open http://localhost:6060/pkg/github.com/jinsenglin/prototype-go/"
+	godoc -http=:6060
