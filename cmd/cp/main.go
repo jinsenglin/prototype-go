@@ -1,30 +1,16 @@
-/*
-Additional Resources
-- https://golang.org/pkg/io/#Copy
-- https://golang.org/pkg/io/ioutil/#WriteFile
-- https://golang.org/pkg/bufio/#Writer.Write
-- https://golang.org/pkg/bufio/#Writer.WriteString
-- https://golang.org/pkg/os/#File.Write
-- https://golang.org/pkg/os/#File.WriteString
-
-Rate Limit
-- https://gobyexample.com/rate-limiting
-- https://godoc.org/golang.org/x/time/rate
-- https://studygolang.com/articles/10148
-- https://github.com/fujiwara/shapeio
-- https://medium.com/@KevinHoffman/rate-limiting-service-calls-in-go-3771c6b7c146
-
-Compare 4 W/R Methods
-- https://gobyexample.com/writing-files
-- https://segmentfault.com/a/1190000011680507
-
-2 HTTP File Transfer Methods
-- r.Body https://gist.github.com/ebraminio/576fdfdff425bf3335b51a191a65dbdb
-- r.FormFile https://astaxie.gitbooks.io/build-web-application-with-golang/en/04.5.html
-
-TCP File Transfer
-- http://mrwaggel.be/post/golang-transfer-a-file-over-a-tcp-socket/
-*/
+//    Copyright 2018 cclin
+//
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+//
+//        http://www.apache.org/licenses/LICENSE-2.0
+//
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
 
 package main
 

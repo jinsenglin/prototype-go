@@ -1,7 +1,3 @@
-/*
-Implementation References
-- https://gist.github.com/ismasan/3fb75381cd2deb6bfa9c
-
 // Copyright (c) 2017 Ismael Celis
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,7 +17,16 @@ Implementation References
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-*/
+
+// The original code by Ismael Celis can be found here https://gist.github.com/ismasan/3fb75381cd2deb6bfa9c
+
+// Changelog 2018 cclin
+
+// * Removed main function
+// * Added SSEServer variable
+// * Modified NewServer function for adding DEMO CODE
+// * Modified ServeHTTP method of Broker struct for checking http request method
+
 package handler
 
 import (
