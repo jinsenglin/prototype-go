@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -12,7 +11,7 @@ var (
 )
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "Usage: %s [OPTIONS] URL\n\n", os.Args[0]) // TODO: remove
+	fmt.Fprintf(os.Stderr, "Usage: %s [SUBCOMMAND] [OPTIONS]\n\n", os.Args[0])
 	fmt.Fprintln(os.Stderr, "OPTIONS:")
 	flag.PrintDefaults()
 	fmt.Fprintln(os.Stderr, "")
@@ -20,17 +19,39 @@ func usage() {
 	fmt.Fprintln(os.Stderr, " HTTP_PROXY proxy for HTTP requests; complete URL or HOST[:PORT]") // TODO: remove
 	fmt.Fprintln(os.Stderr, "")
 	fmt.Fprintln(os.Stderr, "SUBCOMMAND:")
-	fmt.Fprintln(os.Stderr, " launch ...") // TODO: remove
+	fmt.Fprintln(os.Stderr, " up   launch a GKE cluster")
+	fmt.Fprintln(os.Stderr, " more resize GKE cluster by adding one more node")
+	fmt.Fprintln(os.Stderr, " down shutdown GKE cluster")
 }
 
 func init() {
-	flag.IntVar(&n, "num", 1, "number of consumer workers")
-	flag.NewFlagSet("launch", flag.ExitOnError)
+	flag.IntVar(&n, "num", 1, "number of consumer workers") // TODO: remove
 	flag.Usage = usage
+}
+
+func up() {
+	// TODO
+}
+
+func more() {
+	// TODO
+}
+
+func down() {
+	// TODO
 }
 
 func main() {
 	flag.Parse()
 
-	log.Println("ok")
+	switch os.Args[1] {
+	case "up":
+		up()
+	case "more":
+		more()
+	case "down":
+		down()
+	default:
+		os.Exit(1)
+	}
 }
