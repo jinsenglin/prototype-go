@@ -27,7 +27,7 @@ import (
 
 var linectl = line.Run()
 
-func channel_id(path string) (id int) {
+func channelID(path string) (id int) {
 	re, _ := regexp.Compile("[1-9]")
 	id, _ = strconv.Atoi(re.FindString(path))
 	return
@@ -47,7 +47,7 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if re, _ := regexp.Compile("^/channels/[1-9]/chats$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodGet {
-			id := channel_id(r.URL.Path)
+			id := channelID(r.URL.Path)
 			if channel := linectl.GetChannel(id); channel == nil {
 				message := fmt.Sprintf("Channel %d is not opened.", id)
 				http.Error(w, message, http.StatusInternalServerError)
@@ -98,7 +98,7 @@ func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if re, _ := regexp.Compile("^/channels/[1-9]/delete$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodDelete {
-			id := channel_id(r.URL.Path)
+			id := channelID(r.URL.Path)
 			if channel := linectl.GetChannel(id); channel == nil {
 				message := fmt.Sprintf("Channel %d is not opened.", id)
 				http.Error(w, message, http.StatusInternalServerError)
