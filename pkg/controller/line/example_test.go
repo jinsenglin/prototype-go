@@ -12,18 +12,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-// Package line ...
 package line
 
-import (
-	"github.com/jinsenglin/prototype-go/pkg/model"
-)
-
-// Run ...
-func Run() (line *model.Line) {
-	line = model.NewLine()
-
-	go line.Listen()
-
-	return
+func Example() {
+	//Output:
+	//
 }
