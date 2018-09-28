@@ -20,6 +20,7 @@ import (
 	"time"
 )
 
+// ChunkedHandler ...
 func ChunkedHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		// e.g.,

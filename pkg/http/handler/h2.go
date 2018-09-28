@@ -32,6 +32,7 @@ Demo HTTP/2 Server Push
 </html>
 `
 
+// H2Handler ...
 func H2Handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		// NOTE: MUST USE HTTPS e.g.,

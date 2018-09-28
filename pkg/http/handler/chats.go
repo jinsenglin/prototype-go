@@ -21,6 +21,7 @@ import (
 	"strconv"
 )
 
+// ChatsAPIHandler ...
 func ChatsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/chats/" {
 		if r.Method == http.MethodPost {

@@ -36,6 +36,7 @@ import (
 	"time"
 )
 
+// Broker ...
 type Broker struct {
 
 	// Events are pushed to this channel by the main events-gathering routine
@@ -51,6 +52,7 @@ type Broker struct {
 	clients map[chan []byte]bool
 }
 
+// ServeHTTP ...
 func (broker *Broker) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodGet {
 		// e.g.,
@@ -131,6 +133,7 @@ func (broker *Broker) listen() {
 
 }
 
+// NewServer ...
 func NewServer() (broker *Broker) {
 	// Instantiate a broker
 	broker = &Broker{
@@ -157,4 +160,5 @@ func NewServer() (broker *Broker) {
 	return
 }
 
+// SSEServer ...
 var SSEServer = NewServer()

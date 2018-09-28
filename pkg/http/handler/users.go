@@ -34,6 +34,7 @@ func user_idx(path string) (index int) {
 
 var data = model.Users{}
 
+// UsersAPIHandler ...
 func UsersAPIHandler(w http.ResponseWriter, r *http.Request) {
 	// The "/users/" pattern matches everything prefixed, so we need to check
 	// that we're at the ? here.

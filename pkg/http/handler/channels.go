@@ -33,6 +33,7 @@ func channel_id(path string) (id int) {
 	return
 }
 
+// ChannelsAPIHandler ...
 func ChannelsAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/channels/" {
 		if r.Method == http.MethodPost {

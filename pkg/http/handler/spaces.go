@@ -28,6 +28,7 @@ func space_id(path string) (id int) {
 	return
 }
 
+// SpacesAPIHandler ...
 func SpacesAPIHandler(w http.ResponseWriter, r *http.Request) {
 	if re, _ := regexp.Compile("^/spaces/[1-9]$"); re.MatchString(r.URL.Path) {
 		if r.Method == http.MethodGet {
