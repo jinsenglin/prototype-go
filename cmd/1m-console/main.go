@@ -47,6 +47,8 @@ func gcloudContainerClustersCreate() error {
 }
 
 func up() {
+	// TODO: create a Cloud Pub/Sub topic
+
 	// Launch a GKE cluster
 	// No sdk to do this. Use gcloud command-line tool instead.
 	if err := gcloudContainerClustersCreate(); err != nil {
@@ -66,6 +68,7 @@ func more() {
 
 func down() {
 	// TODO: shutdown GKE cluster
+	// TODO: delete Cloud Pub/Sub topic
 }
 
 func main() {
