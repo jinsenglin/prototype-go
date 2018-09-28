@@ -22,7 +22,7 @@ import (
 	"os"
 )
 
-func _os_File_Write(from string, to string) {
+func _osFileWrite(from string, to string) {
 	if fileFrom, err := os.Open(from); err != nil {
 		log.Println(err)
 	} else {
@@ -50,7 +50,7 @@ func _os_File_Write(from string, to string) {
 	}
 }
 
-func _bufio_Write(from string, to string) {
+func _bufioWrite(from string, to string) {
 	if fileFrom, err := os.Open(from); err != nil {
 		log.Println(err)
 	} else {
@@ -80,7 +80,7 @@ func _bufio_Write(from string, to string) {
 	}
 }
 
-func _ioutil_WriteFile(from string, to string) {
+func _ioutilWriteFile(from string, to string) {
 	if fileFrom, err := os.Open(from); err != nil {
 		log.Println(err)
 	} else {
@@ -97,7 +97,7 @@ func _ioutil_WriteFile(from string, to string) {
 	}
 }
 
-func _io_Copy(from string, to string) {
+func _ioCopy(from string, to string) {
 	if fileFrom, err := os.Open(from); err != nil {
 		log.Println(err)
 	} else {
@@ -121,10 +121,10 @@ func _io_Copy(from string, to string) {
 
 func cp(from string, to string) {
 	log.Printf("coping file %v to %v\n", from, to)
-	// _io_Copy(from, to)
-	// _ioutil_WriteFile(from, to)
-	// _bufio_Write(from, to)
-	_os_File_Write(from, to)
+	// _ioCopy(from, to)
+	// _ioutilWriteFile(from, to)
+	// _bufioWrite(from, to)
+	_osFileWrite(from, to)
 }
 
 func main() {
