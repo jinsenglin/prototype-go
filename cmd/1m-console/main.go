@@ -91,7 +91,7 @@ func execCommandStart(stdin []byte, name string, arg ...string) error {
 
 func gcloudProjectsAddIAMPolicyBinding() error {
 	demoServiceAccountFullName := fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", demoServiceAccount, os.Getenv(envGcpProject))
-	return execCommandStart([]byte{}, "gcloud", "projects", "add-iam-policy-binding", os.Getenv(envGcpProject), "--member", demoServiceAccountFullName, "--role", "roles/pubsub.admin")
+	return execCommandStart([]byte{}, "gcloud", "projects", "add-iam-policy-binding", os.Getenv(envGcpProject), "--member", demoServiceAccountFullName, "--role", "roles/pubsub.subscriber")
 }
 
 func gcloudIAMServiceAccountsKeysCreate() error {
@@ -148,7 +148,7 @@ func up() {
 		log.Fatalln(err)
 	}
 
-	// Grant GCP IAM role "roles/pubsub.admin" to GCP service account
+	// Grant GCP IAM role "roles/pubsub.subscriber" to GCP service account
 	// No sdk to do this. Use gcloud command-line tool instead.
 	if err := gcloudProjectsAddIAMPolicyBinding(); err != nil {
 		log.Fatalln(err)
