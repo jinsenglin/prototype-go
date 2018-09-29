@@ -10,10 +10,11 @@ import (
 )
 
 const (
-	envGcpProject  = "GCP_PROJECT"
-	subcommandUp   = "up"
-	subcommandMore = "more"
-	subcommandDown = "down"
+	demoPubsubTopic = "xxxx-5678"
+	envGcpProject   = "GCP_PROJECT"
+	subcommandUp    = "up"
+	subcommandMore  = "more"
+	subcommandDown  = "down"
 )
 
 var (
@@ -51,6 +52,34 @@ func envParse() error {
 	return nil
 }
 
+func gcloudPubsubTopicsDelete() error {
+	cmd := exec.Command("gcloud", "pubsub", "topics", "delete", demoPubsubTopic)
+	cmdStdout, _ := cmd.StdoutPipe()
+	cmdStderr, _ := cmd.StderrPipe()
+	cmd.Start()
+	cmdStdoutBytes, _ := ioutil.ReadAll(cmdStdout)
+	cmdStderrBytes, _ := ioutil.ReadAll(cmdStderr)
+	log.Println("gcloud pubsub topics delete")
+	log.Printf("STDOUT %s", cmdStdoutBytes)
+	log.Printf("STDERR %s", cmdStderrBytes)
+	err := cmd.Wait()
+	return err
+}
+
+func gcloudPubsubTopicsCreate() error {
+	cmd := exec.Command("gcloud", "pubsub", "topics", "create", demoPubsubTopic)
+	cmdStdout, _ := cmd.StdoutPipe()
+	cmdStderr, _ := cmd.StderrPipe()
+	cmd.Start()
+	cmdStdoutBytes, _ := ioutil.ReadAll(cmdStdout)
+	cmdStderrBytes, _ := ioutil.ReadAll(cmdStderr)
+	log.Println("gcloud pubsub topics create")
+	log.Printf("STDOUT %s", cmdStdoutBytes)
+	log.Printf("STDERR %s", cmdStderrBytes)
+	err := cmd.Wait()
+	return err
+}
+
 func gcloudContainerClustersCreate() error {
 	cmd := exec.Command("gcloud", "container", "clusters", "create") // TODO
 	cmdStdout, _ := cmd.StdoutPipe()
@@ -66,7 +95,11 @@ func gcloudContainerClustersCreate() error {
 }
 
 func up() {
-	// TODO: create a Cloud Pub/Sub topic
+	// Create a Cloud Pub/Sub topic
+	// No sdk to do this. Use gcloud command-line tool instead.
+	if err := gcloudPubsubTopicsCreate(); err != nil {
+		log.Fatalln(err)
+	}
 
 	// Launch a GKE cluster
 	// No sdk to do this. Use gcloud command-line tool instead.
@@ -87,7 +120,12 @@ func more() {
 
 func down() {
 	// TODO: shutdown GKE cluster
-	// TODO: delete Cloud Pub/Sub topic
+
+	// Delete Cloud Pub/Sub topic
+	// No sdk to do this. Use gcloud command-line tool instead.
+	if err := gcloudPubsubTopicsDelete(); err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func main() {
