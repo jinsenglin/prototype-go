@@ -34,12 +34,12 @@ const (
 )
 
 var (
-	n int
+	flagWorkloadYamlDir string
 )
 
 const environmentUsage = "\n" +
 	`ENVIRONMENT:` + "\n" +
-	`  %-12s GCP project name to use for this demo. Required` + "\n"
+	`  %-12s GCP project name to use for this demo (required)` + "\n"
 
 const subcommandUsage = "\n" +
 	`SUBCOMMAND:` + "\n" +
@@ -56,7 +56,7 @@ func usage() {
 }
 
 func init() {
-	flag.IntVar(&n, "num", 1, "number of consumer workers") // TODO: remove
+	flag.StringVar(&flagWorkloadYamlDir, "workload", ".", "directory path of K8s workload YAML files")
 	flag.Usage = usage
 }
 
@@ -110,8 +110,7 @@ func gcloudContainerClustersCreate() error {
 }
 
 func kubectlApply() error {
-	// TODO
-	return nil
+	return execCommandStart([]byte{}, "kubectl", "apply", "-f", flagWorkloadYamlDir)
 }
 
 func up() {
