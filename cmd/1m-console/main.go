@@ -9,27 +9,46 @@ import (
 	"os/exec"
 )
 
+const (
+	envGcpProject  = "GCP_PROJECT"
+	subcommandUp   = "up"
+	subcommandMore = "more"
+	subcommandDown = "down"
+)
+
 var (
 	n int
 )
+
+const environmentUsage = "\n" +
+	`ENVIRONMENT:` + "\n" +
+	`  %-12s GCP project name to use for this demo. Required` + "\n"
+
+const subcommandUsage = "\n" +
+	`SUBCOMMAND:` + "\n" +
+	`  %-12s launch a GKE cluster` + "\n" +
+	`  %-12s resize GKE cluster by adding one more node` + "\n" +
+	`  %-12s shutdown GKE cluster` + "\n"
 
 func usage() {
 	fmt.Fprintf(os.Stderr, "Usage: %s [SUBCOMMAND] [OPTIONS]\n\n", os.Args[0])
 	fmt.Fprintln(os.Stderr, "OPTIONS:")
 	flag.PrintDefaults()
-	fmt.Fprintln(os.Stderr, "")
-	fmt.Fprintln(os.Stderr, "ENVIRONMENT:")
-	fmt.Fprintln(os.Stderr, " HTTP_PROXY proxy for HTTP requests; complete URL or HOST[:PORT]") // TODO: remove
-	fmt.Fprintln(os.Stderr, "")
-	fmt.Fprintln(os.Stderr, "SUBCOMMAND:")
-	fmt.Fprintln(os.Stderr, " up   launch a GKE cluster")
-	fmt.Fprintln(os.Stderr, " more resize GKE cluster by adding one more node")
-	fmt.Fprintln(os.Stderr, " down shutdown GKE cluster")
+	fmt.Fprintf(os.Stderr, environmentUsage, envGcpProject)
+	fmt.Fprintf(os.Stderr, subcommandUsage, subcommandUp, subcommandMore, subcommandDown)
 }
 
 func init() {
 	flag.IntVar(&n, "num", 1, "number of consumer workers") // TODO: remove
 	flag.Usage = usage
+}
+
+func envParse() error {
+	if os.Getenv(envGcpProject) == "" {
+		return fmt.Errorf("Environment variable %s is required", envGcpProject)
+	}
+
+	return nil
 }
 
 func gcloudContainerClustersCreate() error {
@@ -73,15 +92,23 @@ func down() {
 
 func main() {
 	flag.Parse()
+	if err := envParse(); err != nil {
+		log.Fatalln(err)
+	}
 
-	switch os.Args[1] {
-	case "up":
-		up()
-	case "more":
-		more()
-	case "down":
-		down()
+	switch len(os.Args) {
+	case 1:
+		usage()
 	default:
-		os.Exit(1)
+		switch os.Args[1] {
+		case subcommandUp:
+			up()
+		case subcommandMore:
+			more()
+		case subcommandDown:
+			down()
+		default:
+			usage()
+		}
 	}
 }
