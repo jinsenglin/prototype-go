@@ -90,17 +90,17 @@ func execCommandStart(stdin []byte, name string, arg ...string) error {
 }
 
 func gcloudProjectsAddIAMPolicyBinding() error {
-	demoServiceAccountFullName := fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", demoServiceAccount, envGcpProject)
-	return execCommandStart([]byte{}, "gcloud", "projects", "add-iam-policy-binding", envGcpProject, "--member", demoServiceAccountFullName, "--role", "roles/pubsub.admin")
+	demoServiceAccountFullName := fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", demoServiceAccount, os.Getenv(envGcpProject))
+	return execCommandStart([]byte{}, "gcloud", "projects", "add-iam-policy-binding", os.Getenv(envGcpProject), "--member", demoServiceAccountFullName, "--role", "roles/pubsub.admin")
 }
 
 func gcloudIAMServiceAccountsKeysCreate() error {
-	demoServiceAccountFullName := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", demoServiceAccount, envGcpProject)
+	demoServiceAccountFullName := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", demoServiceAccount, os.Getenv(envGcpProject))
 	return execCommandStart([]byte{}, "gcloud", "iam", "service-accounts", "keys", "create", flagAPIKeyFile, "--iam-account", demoServiceAccountFullName)
 }
 
 func gcloudIAMServiceAccountsDelete() error {
-	demoServiceAccountFullName := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", demoServiceAccount, envGcpProject)
+	demoServiceAccountFullName := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", demoServiceAccount, os.Getenv(envGcpProject))
 	return execCommandStart([]byte("Y\n"), "gcloud", "iam", "service-accounts", "delete", demoServiceAccountFullName)
 }
 
