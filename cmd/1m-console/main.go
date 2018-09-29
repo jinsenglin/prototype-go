@@ -25,6 +25,7 @@ import (
 )
 
 const (
+	demoServiceAccount   = "xxxx-5678"
 	demoPubsubTopic      = "xxxx-5678"
 	demoContainerCluster = "xxxx-5678"
 	envGcpProject        = "GCP_PROJECT" // TODO: remove
@@ -88,6 +89,25 @@ func execCommandStart(stdin []byte, name string, arg ...string) error {
 	return err
 }
 
+func gcloudProjectsAddIAMPolicyBinding() error {
+	demoServiceAccountFullName := fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", demoServiceAccount, envGcpProject)
+	return execCommandStart([]byte{}, "gcloud", "projects", "add-iam-policy-binding", envGcpProject, "--member", demoServiceAccountFullName, "--role", "roles/pubsub.admin")
+}
+
+func gcloudIAMServiceAccountsKeysCreate() error {
+	demoServiceAccountFullName := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", demoServiceAccount, envGcpProject)
+	return execCommandStart([]byte{}, "gcloud", "iam", "service-accounts", "keys", "create", flagAPIKeyFile, "--iam-account", demoServiceAccountFullName)
+}
+
+func gcloudIAMServiceAccountsDelete() error {
+	demoServiceAccountFullName := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", demoServiceAccount, envGcpProject)
+	return execCommandStart([]byte("Y\n"), "gcloud", "iam", "service-accounts", "delete", demoServiceAccountFullName)
+}
+
+func gcloudIAMServiceAccountsCreate() error {
+	return execCommandStart([]byte{}, "gcloud", "iam", "service-accounts", "create", demoServiceAccount, "--display-name", demoServiceAccount)
+}
+
 func gcloudPubsubTopicsDelete() error {
 	return execCommandStart([]byte{}, "gcloud", "pubsub", "topics", "delete", demoPubsubTopic)
 }
@@ -116,6 +136,24 @@ func kubectlApply() error {
 }
 
 func up() {
+	// Create a GCP service account
+	// No sdk to do this. Use gcloud command-line tool instead.
+	if err := gcloudIAMServiceAccountsCreate(); err != nil {
+		log.Fatalln(err)
+	}
+
+	// Create a GCP service account key
+	// No sdk to do this. Use gcloud command-line tool instead.
+	if err := gcloudIAMServiceAccountsKeysCreate(); err != nil {
+		log.Fatalln(err)
+	}
+
+	// Grant GCP IAM role "roles/pubsub.admin" to GCP service account
+	// No sdk to do this. Use gcloud command-line tool instead.
+	if err := gcloudProjectsAddIAMPolicyBinding(); err != nil {
+		log.Fatalln(err)
+	}
+
 	// Create a Cloud Pub/Sub topic
 	// No sdk to do this. Use gcloud command-line tool instead.
 	if err := gcloudPubsubTopicsCreate(); err != nil {
@@ -141,6 +179,12 @@ func more() {
 }
 
 func down() {
+	// Delete GCP service account
+	// No sdk to do this. Use gcloud command-line tool instead.
+	if err := gcloudIAMServiceAccountsDelete(); err != nil {
+		log.Fatalln(err)
+	}
+
 	// Delete Cloud Pub/Sub topic
 	// No sdk to do this. Use gcloud command-line tool instead.
 	if err := gcloudPubsubTopicsDelete(); err != nil {
