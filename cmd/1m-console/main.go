@@ -166,6 +166,9 @@ func up() {
 		log.Fatalln(err)
 	}
 
+	// TODO: create a K8s secret object
+	// kubectl create secret generic pubsub-key --from-file=key.json=PATH-TO-KEY-FILE.json
+
 	// Deploy workload to GKE cluster
 	// Use kubectl command-line tool, which is an easier way compared to client-go library.
 	if err := kubectlApply(); err != nil {
