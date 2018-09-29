@@ -26,7 +26,7 @@ import (
 
 const (
 	demoServiceAccount   = "xxxx-5678"
-	demoPubsubTopic      = "xxxx-5678"
+	demoPubsubTopic      = "echo"
 	demoContainerCluster = "xxxx-5678"
 	envGcpProject        = "GCP_PROJECT"
 	subcommandUp         = "up"
@@ -35,8 +35,8 @@ const (
 )
 
 var (
-	flagWorkloadYamlDir string
-	flagAPIKeyFile      string
+	flagWorkload   string
+	flagAPIKeyFile string
 )
 
 const environmentUsage = "\n" +
@@ -58,8 +58,8 @@ func usage() {
 }
 
 func init() {
-	flag.StringVar(&flagWorkloadYamlDir, "workload", ".", "directory path of K8s workload YAML files")
-	flag.StringVar(&flagAPIKeyFile, "key", "key.json", "file path of GCP service account credential for using Cloud Pub/Sub")
+	flag.StringVar(&flagWorkload, "workload", "workload.yaml", "path of directory or file that presents K8s workload")
+	flag.StringVar(&flagAPIKeyFile, "key", "out/key.json", "path of GCP service account credential file to use for Cloud Pub/Sub")
 	flag.Usage = usage
 }
 
@@ -131,8 +131,13 @@ func gcloudContainerClustersCreate() error {
 	// auto-config kubeconfig after cluster creation
 }
 
+func kubectlCreateSecret() error {
+	fromFileKeyValue := fmt.Sprintf("key.json=%s", flagAPIKeyFile)
+	return execCommandStart([]byte{}, "kubectl", "create", "secret", "generic", "pubsub-key", "--from-file", fromFileKeyValue)
+}
+
 func kubectlApply() error {
-	return execCommandStart([]byte{}, "kubectl", "apply", "-f", flagWorkloadYamlDir)
+	return execCommandStart([]byte{}, "kubectl", "apply", "-f", flagWorkload)
 }
 
 func up() {
@@ -166,8 +171,11 @@ func up() {
 		log.Fatalln(err)
 	}
 
-	// TODO: create a K8s secret object
-	// kubectl create secret generic pubsub-key --from-file=key.json=PATH-TO-KEY-FILE.json
+	// Create a K8s secret object
+	// Use kubectl command-line tool, which is an easier way compared to client-go library.
+	if err := kubectlCreateSecret(); err != nil {
+		log.Fatalln(err)
+	}
 
 	// Deploy workload to GKE cluster
 	// Use kubectl command-line tool, which is an easier way compared to client-go library.
