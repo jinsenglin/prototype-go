@@ -35,6 +35,7 @@ const (
 
 var (
 	flagWorkloadYamlDir string
+	flagAPIKeyFile      string
 )
 
 const environmentUsage = "\n" +
@@ -57,6 +58,7 @@ func usage() {
 
 func init() {
 	flag.StringVar(&flagWorkloadYamlDir, "workload", ".", "directory path of K8s workload YAML files")
+	flag.StringVar(&flagAPIKeyFile, "key", "key.json", "file path of GCP service account credential for using Cloud Pub/Sub")
 	flag.Usage = usage
 }
 
