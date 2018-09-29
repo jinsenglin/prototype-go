@@ -10,11 +10,12 @@ import (
 )
 
 const (
-	demoPubsubTopic = "xxxx-5678"
-	envGcpProject   = "GCP_PROJECT"
-	subcommandUp    = "up"
-	subcommandMore  = "more"
-	subcommandDown  = "down"
+	demoPubsubTopic      = "xxxx-5678"
+	demoContainerCluster = "xxxx-5678"
+	envGcpProject        = "GCP_PROJECT"
+	subcommandUp         = "up"
+	subcommandMore       = "more"
+	subcommandDown       = "down"
 )
 
 var (
@@ -52,46 +53,36 @@ func envParse() error {
 	return nil
 }
 
-func gcloudPubsubTopicsDelete() error {
-	cmd := exec.Command("gcloud", "pubsub", "topics", "delete", demoPubsubTopic)
+func execCommandStart(stdin []byte, name string, arg ...string) error {
+	cmd := exec.Command(name, arg...)
+	cmdStdin, _ := cmd.StdinPipe()
 	cmdStdout, _ := cmd.StdoutPipe()
 	cmdStderr, _ := cmd.StderrPipe()
 	cmd.Start()
+	cmdStdin.Write(stdin)
 	cmdStdoutBytes, _ := ioutil.ReadAll(cmdStdout)
 	cmdStderrBytes, _ := ioutil.ReadAll(cmdStderr)
-	log.Println("gcloud pubsub topics delete")
-	log.Printf("STDOUT %s", cmdStdoutBytes)
-	log.Printf("STDERR %s", cmdStderrBytes)
+	log.Println(name, arg)
+	log.Printf("STDOUT\n%s", cmdStdoutBytes)
+	log.Printf("STDERR\n%s", cmdStderrBytes)
 	err := cmd.Wait()
 	return err
+}
+
+func gcloudPubsubTopicsDelete() error {
+	return execCommandStart([]byte{}, "gcloud", "pubsub", "topics", "delete", demoPubsubTopic)
 }
 
 func gcloudPubsubTopicsCreate() error {
-	cmd := exec.Command("gcloud", "pubsub", "topics", "create", demoPubsubTopic)
-	cmdStdout, _ := cmd.StdoutPipe()
-	cmdStderr, _ := cmd.StderrPipe()
-	cmd.Start()
-	cmdStdoutBytes, _ := ioutil.ReadAll(cmdStdout)
-	cmdStderrBytes, _ := ioutil.ReadAll(cmdStderr)
-	log.Println("gcloud pubsub topics create")
-	log.Printf("STDOUT %s", cmdStdoutBytes)
-	log.Printf("STDERR %s", cmdStderrBytes)
-	err := cmd.Wait()
-	return err
+	return execCommandStart([]byte{}, "gcloud", "pubsub", "topics", "create", demoPubsubTopic)
+}
+
+func gcloudContainerClustersDelete() error {
+	return execCommandStart([]byte("Y\n"), "gcloud", "container", "clusters", "delete", demoContainerCluster)
 }
 
 func gcloudContainerClustersCreate() error {
-	cmd := exec.Command("gcloud", "container", "clusters", "create") // TODO
-	cmdStdout, _ := cmd.StdoutPipe()
-	cmdStderr, _ := cmd.StderrPipe()
-	cmd.Start()
-	cmdStdoutBytes, _ := ioutil.ReadAll(cmdStdout)
-	cmdStderrBytes, _ := ioutil.ReadAll(cmdStderr)
-	log.Println("gcloud container clusters create")
-	log.Printf("STDOUT %s", cmdStdoutBytes)
-	log.Printf("STDERR %s", cmdStderrBytes)
-	err := cmd.Wait()
-	return err
+	return execCommandStart([]byte{}, "gcloud", "container", "clusters", "create", demoContainerCluster)
 }
 
 func up() {
@@ -107,8 +98,6 @@ func up() {
 		log.Fatalln(err)
 	}
 
-	// TODO: wait GKE cluster ready to use
-
 	// TODO: deploy workload to GKE cluster
 	// No sdk to do this. Use kubectl command-line tool instead.
 }
@@ -119,11 +108,15 @@ func more() {
 }
 
 func down() {
-	// TODO: shutdown GKE cluster
-
 	// Delete Cloud Pub/Sub topic
 	// No sdk to do this. Use gcloud command-line tool instead.
 	if err := gcloudPubsubTopicsDelete(); err != nil {
+		log.Fatalln(err)
+	}
+
+	// Shutdown GKE cluster
+	// No sdk to do this. Use gcloud command-line tool instead.
+	if err := gcloudContainerClustersDelete(); err != nil {
 		log.Fatalln(err)
 	}
 }
