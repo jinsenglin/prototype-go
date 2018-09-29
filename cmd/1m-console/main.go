@@ -28,7 +28,7 @@ const (
 	demoServiceAccount   = "xxxx-5678"
 	demoPubsubTopic      = "xxxx-5678"
 	demoContainerCluster = "xxxx-5678"
-	envGcpProject        = "GCP_PROJECT" // TODO: remove
+	envGcpProject        = "GCP_PROJECT"
 	subcommandUp         = "up"
 	subcommandMore       = "more"
 	subcommandDown       = "down"
