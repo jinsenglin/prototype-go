@@ -91,7 +91,7 @@ func execCommandStart(stdin []byte, name string, arg ...string) error {
 
 func gcloudProjectsAddIAMPolicyBinding() error {
 	demoServiceAccountFullName := fmt.Sprintf("serviceAccount:%s@%s.iam.gserviceaccount.com", demoServiceAccount, os.Getenv(envGcpProject))
-	return execCommandStart([]byte{}, "gcloud", "projects", "add-iam-policy-binding", os.Getenv(envGcpProject), "--member", demoServiceAccountFullName, "--role", "roles/pubsub.subscriber")
+	return execCommandStart([]byte{}, "gcloud", "projects", "add-iam-policy-binding", os.Getenv(envGcpProject), "--member", demoServiceAccountFullName, "--role", "roles/pubsub.admin")
 }
 
 func gcloudIAMServiceAccountsKeysCreate() error {
@@ -153,14 +153,14 @@ func up() {
 		log.Fatalln(err)
 	}
 
-	// Grant GCP IAM role "roles/pubsub.subscriber" to GCP service account
+	// Grant GCP IAM role "roles/pubsub.admin" to GCP service account
 	// No sdk to do this. Use gcloud command-line tool instead.
 	if err := gcloudProjectsAddIAMPolicyBinding(); err != nil {
 		log.Fatalln(err)
 	}
 
 	// Create a Cloud Pub/Sub topic
-	// No sdk to do this. Use gcloud command-line tool instead.
+	// Use gcloud command-line tool, which is an easier way compared to gcp client library.
 	if err := gcloudPubsubTopicsCreate(); err != nil {
 		log.Fatalln(err)
 	}
@@ -190,14 +190,19 @@ func more() {
 }
 
 func down() {
+	// TODO: maybe delete GCP service account key before deleting service account
+	// TODO: maybe delete GCP IAM role from service account before deleting service account
+
 	// Delete GCP service account
 	// No sdk to do this. Use gcloud command-line tool instead.
 	if err := gcloudIAMServiceAccountsDelete(); err != nil {
 		log.Fatalln(err)
 	}
 
+	// TODO: maybe delete Cloud Pub/Sub subscription before deleting topic
+
 	// Delete Cloud Pub/Sub topic
-	// No sdk to do this. Use gcloud command-line tool instead.
+	// Use gcloud command-line tool, which is an easier way compared to gcp client library.
 	if err := gcloudPubsubTopicsDelete(); err != nil {
 		log.Fatalln(err)
 	}
