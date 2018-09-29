@@ -21,12 +21,13 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 const (
 	demoPubsubTopic      = "xxxx-5678"
 	demoContainerCluster = "xxxx-5678"
-	envGcpProject        = "GCP_PROJECT"
+	envGcpProject        = "GCP_PROJECT" // TODO: remove
 	subcommandUp         = "up"
 	subcommandMore       = "more"
 	subcommandDown       = "down"
@@ -68,6 +69,8 @@ func envParse() error {
 }
 
 func execCommandStart(stdin []byte, name string, arg ...string) error {
+	log.Println(name, arg)
+
 	cmd := exec.Command(name, arg...)
 	cmdStdin, _ := cmd.StdinPipe()
 	cmdStdout, _ := cmd.StdoutPipe()
@@ -76,9 +79,9 @@ func execCommandStart(stdin []byte, name string, arg ...string) error {
 	cmdStdin.Write(stdin)
 	cmdStdoutBytes, _ := ioutil.ReadAll(cmdStdout)
 	cmdStderrBytes, _ := ioutil.ReadAll(cmdStderr)
-	log.Println(name, arg)
 	log.Printf("STDOUT\n%s", cmdStdoutBytes)
 	log.Printf("STDERR\n%s", cmdStderrBytes)
+
 	err := cmd.Wait()
 	return err
 }
@@ -96,7 +99,19 @@ func gcloudContainerClustersDelete() error {
 }
 
 func gcloudContainerClustersCreate() error {
-	return execCommandStart([]byte{}, "gcloud", "container", "clusters", "create", demoContainerCluster)
+	cmdTemplate := `container clusters create %s --num-nodes 1`
+	cmdString := fmt.Sprintf(cmdTemplate, demoContainerCluster)
+	cmdArg := strings.Split(cmdString, " ")
+	return execCommandStart([]byte{}, "gcloud", cmdArg...)
+
+	// NOTE
+	// spend 2 mins 20 secs for 1 node
+	// auto-config kubeconfig after cluster creation
+}
+
+func kubectlApply() error {
+	// TODO
+	return nil
 }
 
 func up() {
@@ -112,8 +127,11 @@ func up() {
 		log.Fatalln(err)
 	}
 
-	// TODO: deploy workload to GKE cluster
-	// No sdk to do this. Use kubectl command-line tool instead.
+	// Deploy workload to GKE cluster
+	// Use kubectl command-line tool, which is an easier way compared to client-go library.
+	if err := kubectlApply(); err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func more() {
