@@ -177,6 +177,7 @@ func up() {
 		log.Fatalln(err)
 	}
 
+	// TODO: replace kubectl with helm command-line tool.
 	// Deploy workload to GKE cluster
 	// Use kubectl command-line tool, which is an easier way compared to client-go library.
 	if err := kubectlApply(); err != nil {
