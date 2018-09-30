@@ -27,6 +27,24 @@ run-image-1m-consumer:
 run-image-1m-producer:
 	docker run --rm -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} --name 1m-producer jinsenglin/1m-producer:latest
 
+run-image-1m-consumer-in-k8s-by-docker-for-mac:
+	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
+	kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
+	helm install --name 1m-consumer k8s/DockerForMac/1m-consumer
+	echo "CLEANUP STEPS"
+	echo "helm delete --purge 1m-consumer"
+	echo "kubectl delete configmap gcp-project"
+	echo "kubectl delete secret key-json"
+
+run-image-1m-producer-in-k8s-by-docker-for-mac:
+	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
+	kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
+	helm install --name 1m-producer k8s/DockerForMac/1m-producer
+	echo "CLEANUP STEPS"
+	echo "helm delete --purge 1m-consumer"
+	echo "kubectl delete configmap gcp-project"
+	echo "kubectl delete secret key-json"
+
 run-cmd-ls:
 	go build -race -o out/ls cmd/ls/*.go
 	./out/ls / /non-exist
