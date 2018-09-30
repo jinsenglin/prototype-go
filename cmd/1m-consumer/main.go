@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 	"time"
 
 	"cloud.google.com/go/pubsub"
@@ -26,6 +27,7 @@ import (
 )
 
 const (
+	demoPubsubTopic  = "echo"
 	envGcpProject    = "GCP_PROJECT"
 	envGcpAPIKeyFile = "GCP_KEYJSON"
 )
@@ -42,9 +44,31 @@ func envParse() error {
 	return nil
 }
 
-func subscribeIfNotExits(client *pubsub.Client) error {
-	// TODO
-	return nil
+func getSubscription(ctx context.Context, client *pubsub.Client) (*pubsub.Subscription, error) {
+	id, err := os.Hostname()
+
+	if err != nil {
+		return nil, err
+	}
+
+	subscription := client.Subscription(id)
+	exist, err := subscription.Exists(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if exist {
+		return subscription, nil
+	}
+
+	topic := client.Topic(demoPubsubTopic)
+	option := pubsub.SubscriptionConfig{
+		Topic:       topic,
+		AckDeadline: 10 * time.Second, // TODO
+	}
+
+	return client.CreateSubscription(ctx, id, option)
 }
 
 func main() {
@@ -52,19 +76,33 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	pubsubClient, err := pubsub.NewClient(context.Background(), os.Getenv(envGcpProject), option.WithCredentialsFile(os.Getenv(envGcpAPIKeyFile)))
+	ctx := context.Background()
+	client, err := pubsub.NewClient(ctx, os.Getenv(envGcpProject), option.WithCredentialsFile(os.Getenv(envGcpAPIKeyFile)))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer client.Close()
+
+	sub, err := getSubscription(ctx, client)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Create a subscription if not exits
-	if err := subscribeIfNotExits(pubsubClient); err != nil {
-		log.Fatalln(err)
-	}
-
 	// TODO: keep consuming
-	for {
-		time.Sleep(1 * time.Second)
-		log.Println("consumed a message")
+	// Consume 10 messages.
+	var mu sync.Mutex
+	received := 0
+	cctx, cancel := context.WithCancel(ctx)
+	if err := sub.Receive(cctx, func(ctx context.Context, msg *pubsub.Message) {
+		msg.Ack()
+		fmt.Printf("consumed a message: %q\n", string(msg.Data))
+		mu.Lock()
+		defer mu.Unlock()
+		received++
+		if received == 10 {
+			cancel()
+		}
+	}); err != nil {
+		log.Fatalln(err)
 	}
 }
