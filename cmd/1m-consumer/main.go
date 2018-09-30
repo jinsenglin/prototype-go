@@ -16,12 +16,31 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"cloud.google.com/go/pubsub"
 	"google.golang.org/api/option"
 )
+
+const (
+	envGcpProject    = "GCP_PROJECT"
+	envGcpAPIKeyFile = "GCP_KEYJSON"
+)
+
+func envParse() error {
+	if os.Getenv(envGcpProject) == "" {
+		return fmt.Errorf("Environment variable %s is required", envGcpProject)
+	}
+
+	if os.Getenv(envGcpAPIKeyFile) == "" {
+		return fmt.Errorf("Environment variable %s is required", envGcpAPIKeyFile)
+	}
+
+	return nil
+}
 
 func subscribeIfNotExits(client *pubsub.Client) error {
 	// TODO
@@ -29,9 +48,11 @@ func subscribeIfNotExits(client *pubsub.Client) error {
 }
 
 func main() {
-	// TODO: get project name from environment variable
-	// TODO: get credential file path from environment variable
-	pubsubClient, err := pubsub.NewClient(context.Background(), "k8s-project-199813", option.WithCredentialsFile("/Users/cclin/key.json"))
+	if err := envParse(); err != nil {
+		log.Fatalln(err)
+	}
+
+	pubsubClient, err := pubsub.NewClient(context.Background(), os.Getenv(envGcpProject), option.WithCredentialsFile(os.Getenv(envGcpAPIKeyFile)))
 	if err != nil {
 		log.Fatalln(err)
 	}

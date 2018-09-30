@@ -5,6 +5,14 @@ run-cmd-1m-console:
 	go build -race -o out/1m-console cmd/1m-console/*.go
 	./out/1m-console
 
+run-cmd-1m-consumer:
+	go build -race -o out/1m-consumer cmd/1m-consumer/*.go
+	./out/1m-consumer
+
+run-cmd-1m-producer:
+	go build -race -o out/1m-producer cmd/1m-producer/*.go
+	./out/1m-producer
+
 build-1m-consumer-image:
 	docker build -f dockerfile/1m-consumer/Dockerfile -t jinsenglin/1m-consumer:latest .
 
