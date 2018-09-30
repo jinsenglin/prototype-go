@@ -26,6 +26,7 @@ import (
 )
 
 const (
+	demoPubsubTopic  = "echo"
 	envGcpProject    = "GCP_PROJECT"
 	envGcpAPIKeyFile = "GCP_KEYJSON"
 )
@@ -47,15 +48,29 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	pubsubClient, err := pubsub.NewClient(context.Background(), os.Getenv(envGcpProject), option.WithCredentialsFile(os.Getenv(envGcpAPIKeyFile)))
+	ctx := context.Background()
+	client, err := pubsub.NewClient(ctx, os.Getenv(envGcpProject), option.WithCredentialsFile(os.Getenv(envGcpAPIKeyFile)))
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer client.Close()
 
 	// TODO: keep producing
-	_ = pubsubClient
+	t := client.Topic(demoPubsubTopic)
 	for {
-		time.Sleep(1 * time.Second)
-		log.Println("produced a message")
+		result := t.Publish(ctx, &pubsub.Message{
+			Data: []byte("msg"),
+		})
+
+		// Block until the result is returned and a server-generated
+		// ID is returned for the published message.
+		id, err := result.Get(ctx)
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		log.Printf("produced a message; msg ID: %v\n", id)
+		time.Sleep(3 * time.Second)
 	}
 }
