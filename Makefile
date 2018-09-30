@@ -30,18 +30,18 @@ run-image-1m-producer:
 run-image-1m-consumer-in-k8s-by-docker-for-mac:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
 	kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
-	helm install --name 1m-consumer k8s/DockerForMac/1m-consumer
+	helm install --name onem-consumer k8s/DockerForMac/onem-consumer
 	echo "CLEANUP STEPS"
-	echo "helm delete --purge 1m-consumer"
+	echo "helm delete --purge onem-consumer"
 	echo "kubectl delete configmap gcp-project"
 	echo "kubectl delete secret key-json"
 
 run-image-1m-producer-in-k8s-by-docker-for-mac:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
 	kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
-	helm install --name 1m-producer k8s/DockerForMac/1m-producer
+	helm install --name onem-producer k8s/DockerForMac/onem-producer
 	echo "CLEANUP STEPS"
-	echo "helm delete --purge 1m-consumer"
+	echo "helm delete --purge onem-producer"
 	echo "kubectl delete configmap gcp-project"
 	echo "kubectl delete secret key-json"
 
