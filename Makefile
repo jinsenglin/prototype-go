@@ -13,11 +13,19 @@ run-cmd-1m-producer:
 	go build -race -o out/1m-producer cmd/1m-producer/*.go
 	./out/1m-producer
 
-build-1m-consumer-image:
+build-image-1m-consumer:
+	GOOS=linux GOARCH=amd64 go build -o out/1m-consumer-linux-amd64 cmd/1m-consumer/*.go
 	docker build -f dockerfile/1m-consumer/Dockerfile -t jinsenglin/1m-consumer:latest .
 
-build-1m-producer-image:
+build-image-1m-producer:
+	GOOS=linux GOARCH=amd64 go build -o out/1m-producer-linux-amd64 cmd/1m-producer/*.go
 	docker build -f dockerfile/1m-producer/Dockerfile -t jinsenglin/1m-producer:latest .
+
+run-image-1m-consumer:
+	docker run --rm -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} --name 1m-consumer jinsenglin/1m-consumer:latest
+
+run-image-1m-producer:
+	docker run --rm -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} --name 1m-producer jinsenglin/1m-producer:latest
 
 run-cmd-ls:
 	go build -race -o out/ls cmd/ls/*.go
