@@ -5,6 +5,12 @@ run-cmd-1m-console:
 	go build -race -o out/1m-console cmd/1m-console/*.go
 	./out/1m-console
 
+build-1m-consumer-image:
+	docker build -f dockerfile/1m-consumer/Dockerfile -t jinsenglin/1m-consumer:latest .
+
+build-1m-producer-image:
+	docker build -f dockerfile/1m-producer/Dockerfile -t jinsenglin/1m-producer:latest .
+
 run-cmd-ls:
 	go build -race -o out/ls cmd/ls/*.go
 	./out/ls / /non-exist
