@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sync"
 	"time"
 
 	"cloud.google.com/go/pubsub"
@@ -89,19 +88,8 @@ func main() {
 	}
 
 	// TODO: keep consuming
-	// Consume 10 messages.
-	var mu sync.Mutex
-	received := 0
-	cctx, cancel := context.WithCancel(ctx)
-	if err := sub.Receive(cctx, func(ctx context.Context, msg *pubsub.Message) {
-		msg.Ack()
-		fmt.Printf("consumed a message: %q\n", string(msg.Data))
-		mu.Lock()
-		defer mu.Unlock()
-		received++
-		if received == 10 {
-			cancel()
-		}
+	if err := sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
+		fmt.Printf("consumed a message %s: %q\n", msg.ID, string(msg.Data))
 	}); err != nil {
 		log.Fatalln(err)
 	}
