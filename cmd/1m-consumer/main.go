@@ -197,7 +197,7 @@ func (broker *Broker) prosume() {
 		msg.Ack()
 		log.Printf("SUBSCRIBER | acked a message from Pub/Sub topic | ID %s", msg.ID)
 
-		eventString := fmt.Sprintf("data: ID %s | Data %s", msg.ID, msg.Data)
+		eventString := fmt.Sprintf("data: %s", msg.ID)
 		broker.Notifier <- []byte(eventString)
 	})
 	if err != nil {
