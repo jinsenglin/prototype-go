@@ -5,6 +5,10 @@ run-cmd-1m-console:
 	go build -race -o out/1m-console cmd/1m-console/*.go
 	./out/1m-console
 
+run-cmd-1m-client:
+	go build -race -o out/1m-client cmd/1m-client/*.go
+	./out/1m-client
+
 run-cmd-1m-consumer:
 	go build -race -o out/1m-consumer cmd/1m-consumer/*.go
 	./out/1m-consumer
@@ -12,6 +16,10 @@ run-cmd-1m-consumer:
 run-cmd-1m-producer:
 	go build -race -o out/1m-producer cmd/1m-producer/*.go
 	./out/1m-producer
+
+build-image-1m-client:
+	GOOS=linux GOARCH=amd64 go build -o out/1m-client-linux-amd64 cmd/1m-client/*.go
+	docker build -f dockerfile/1m-client/Dockerfile -t jinsenglin/1m-client:latest .
 
 build-image-1m-consumer:
 	GOOS=linux GOARCH=amd64 go build -o out/1m-consumer-linux-amd64 cmd/1m-consumer/*.go
@@ -21,11 +29,19 @@ build-image-1m-producer:
 	GOOS=linux GOARCH=amd64 go build -o out/1m-producer-linux-amd64 cmd/1m-producer/*.go
 	docker build -f dockerfile/1m-producer/Dockerfile -t jinsenglin/1m-producer:latest .
 
+run-image-1m-client:
+	docker run --rm -e SERVER_URL=localhost/sse --name 1m-client jinsenglin/1m-client:latest
+
 run-image-1m-consumer:
 	docker run --rm -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} --name 1m-consumer jinsenglin/1m-consumer:latest
 
 run-image-1m-producer:
 	docker run --rm -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} --name 1m-producer jinsenglin/1m-producer:latest
+
+run-image-1m-client-in-k8s-by-docker-for-mac:
+	helm install --name onem-client k8s/DockerForMac/onem-client
+	echo "CLEANUP STEPS"
+	echo "helm delete --purge onem-client"
 
 run-image-1m-consumer-in-k8s-by-docker-for-mac:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
