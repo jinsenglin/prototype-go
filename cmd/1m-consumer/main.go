@@ -181,7 +181,7 @@ func (broker *Broker) prosume() {
 
 	err = sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
 		msg.Ack()
-		log.Printf("consumed a message from Pub/Sub topic | ID %s", msg.ID)
+		log.Printf("SUBSCRIBER | consumed a message from Pub/Sub topic | ID %s", msg.ID)
 
 		eventString := fmt.Sprintf("ID %s | Data %s", msg.ID, msg.Data)
 		broker.Notifier <- []byte(eventString)
