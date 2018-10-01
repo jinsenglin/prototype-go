@@ -33,10 +33,10 @@ run-image-1m-client:
 	docker run --rm -P -e SERVER_URL=localhost/sse --name 1m-client jinsenglin/1m-client:latest
 
 run-image-1m-consumer:
-	docker run --rm -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} --name 1m-consumer jinsenglin/1m-consumer:latest
+	docker run --rm -P -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} --name 1m-consumer jinsenglin/1m-consumer:latest
 
 run-image-1m-producer:
-	docker run --rm -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} --name 1m-producer jinsenglin/1m-producer:latest
+	docker run --rm -P -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} --name 1m-producer jinsenglin/1m-producer:latest
 
 run-image-1m-client-in-k8s-by-docker-for-mac:
 	helm install --name onem-client k8s/DockerForMac/onem-client
