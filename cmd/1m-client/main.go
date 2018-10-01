@@ -8,8 +8,10 @@ import (
 )
 
 func main() {
-	log.Println("prometheus metrics endpoint :8080/metrics")
+	// TODO: simulate 10 virtual clients
 
+	log.Println("HTTP SERVER | prometheus metrics endpoint :8080/metrics")
 	http.Handle("/metrics", promhttp.Handler())
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
