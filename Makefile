@@ -30,7 +30,7 @@ build-image-1m-producer:
 	docker build -f dockerfile/1m-producer/Dockerfile -t jinsenglin/1m-producer:latest .
 
 run-image-1m-client:
-	docker run --rm -P -e SERVER_URL=localhost/sse --name 1m-client jinsenglin/1m-client:latest
+	docker run --rm --name 1m-client jinsenglin/1m-client:latest /app -url http://172.17.0.2:8082/sse
 
 run-image-1m-consumer:
 	docker run --rm -P -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} -h onem-consumer --name 1m-consumer jinsenglin/1m-consumer:latest

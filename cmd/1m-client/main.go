@@ -80,6 +80,8 @@ func virtualClient() {
 }
 
 func main() {
+	flag.Parse()
+
 	// TODO: simulate 10 virtual clients
 	for i := 0; i < 1; i++ {
 		go virtualClient()
