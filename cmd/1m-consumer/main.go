@@ -46,11 +46,15 @@ func envParse() error {
 }
 
 func getSubscription(ctx context.Context, client *pubsub.Client) (*pubsub.Subscription, error) {
-	id, err := os.Hostname()
+	hostname, err := os.Hostname()
+	log.Printf("SUBSCRIBER | hostname %s ", hostname)
 
 	if err != nil {
 		return nil, err
 	}
+
+	id := fmt.Sprintf("sub-%s", hostname)
+	log.Printf("SUBSCRIBER | id %s ", id)
 
 	subscription := client.Subscription(id)
 	exist, err := subscription.Exists(ctx)
@@ -60,6 +64,7 @@ func getSubscription(ctx context.Context, client *pubsub.Client) (*pubsub.Subscr
 	}
 
 	if exist {
+		log.Printf("SUBSCRIBER | using a existed subscription | ID %s", subscription.ID())
 		return subscription, nil
 	}
 
@@ -69,7 +74,15 @@ func getSubscription(ctx context.Context, client *pubsub.Client) (*pubsub.Subscr
 		AckDeadline: 60 * time.Second,
 	}
 
-	return client.CreateSubscription(ctx, id, option)
+	subscription, err = client.CreateSubscription(ctx, id, option)
+
+	if err != nil {
+		log.Printf("SUBSCRIBER | failed a new subscription | ID %s", subscription.ID())
+	} else {
+		log.Printf("SUBSCRIBER | created a new subscription | ID %s", subscription.ID())
+	}
+
+	return subscription, err
 }
 
 // Broker ...

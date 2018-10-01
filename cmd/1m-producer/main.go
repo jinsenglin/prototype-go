@@ -18,10 +18,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
 	"cloud.google.com/go/pubsub"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/api/option"
 )
 
@@ -43,11 +45,7 @@ func envParse() error {
 	return nil
 }
 
-func main() {
-	if err := envParse(); err != nil {
-		log.Fatalln(err)
-	}
-
+func publish() {
 	ctx := context.Background()
 	client, err := pubsub.NewClient(ctx, os.Getenv(envGcpProject), option.WithCredentialsFile(os.Getenv(envGcpAPIKeyFile)))
 	if err != nil {
@@ -55,7 +53,6 @@ func main() {
 	}
 	defer client.Close()
 
-	// TODO: keep producing
 	t := client.Topic(demoPubsubTopic)
 	for {
 		result := t.Publish(ctx, &pubsub.Message{
@@ -70,7 +67,21 @@ func main() {
 			log.Fatalln(err)
 		}
 
-		log.Printf("produced a message; msg ID: %v\n", id)
-		time.Sleep(3 * time.Second)
+		log.Printf("PUBLISHER | published a message to Pub/Sub topic | ID %s", id)
+		time.Sleep(5 * time.Second)
 	}
+}
+
+func main() {
+	if err := envParse(); err != nil {
+		log.Fatalln(err)
+	}
+
+	// Keep publishing
+	go publish()
+
+	log.Println("HTTP SERVER | prometheus metrics endpoint :8080/metrics")
+	http.Handle("/metrics", promhttp.Handler())
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
