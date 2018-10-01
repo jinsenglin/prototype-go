@@ -52,8 +52,6 @@ func watch() (events chan Event, err error) {
 				log.Fatalln(err)
 			}
 
-			log.Printf("DEBUG | LINE = %s", line)
-
 			switch {
 			case bytes.HasPrefix(line, []byte("data:")):
 				ev.Data = line
@@ -77,7 +75,7 @@ func virtualClient() {
 	}
 
 	for event := range events {
-		log.Printf("CLIENT | received a message | NAME %s | DATA %s", event.Name, event.Data)
+		log.Printf("CLIENT | received a message | DATA %s", event.Data)
 	}
 }
 
