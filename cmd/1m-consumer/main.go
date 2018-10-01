@@ -47,14 +47,14 @@ func envParse() error {
 
 func getSubscription(ctx context.Context, client *pubsub.Client) (*pubsub.Subscription, error) {
 	hostname, err := os.Hostname()
-	log.Printf("SUBSCRIBER | hostname %s ", hostname)
+	log.Printf("SUBSCRIBER | HOSTNAME %s ", hostname)
 
 	if err != nil {
 		return nil, err
 	}
 
 	id := fmt.Sprintf("sub-%s", hostname)
-	log.Printf("SUBSCRIBER | id %s ", id)
+	log.Printf("SUBSCRIBER | ID %s ", id)
 
 	subscription := client.Subscription(id)
 	exist, err := subscription.Exists(ctx)
@@ -192,6 +192,7 @@ func (broker *Broker) prosume() {
 		log.Fatalln(err)
 	}
 
+	log.Println("SUBSCRIBER | consuming ...")
 	err = sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
 		msg.Ack()
 		log.Printf("SUBSCRIBER | consumed a message from Pub/Sub topic | ID %s", msg.ID)

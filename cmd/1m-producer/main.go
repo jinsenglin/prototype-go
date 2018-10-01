@@ -54,7 +54,10 @@ func publish() {
 	defer client.Close()
 
 	t := client.Topic(demoPubsubTopic)
+	log.Println("PUBLISHER | publishing ...")
 	for {
+		time.Sleep(5 * time.Second)
+
 		result := t.Publish(ctx, &pubsub.Message{
 			Data: []byte("msg"),
 		})
@@ -68,7 +71,6 @@ func publish() {
 		}
 
 		log.Printf("PUBLISHER | published a message to Pub/Sub topic | ID %s", id)
-		time.Sleep(5 * time.Second)
 	}
 }
 
