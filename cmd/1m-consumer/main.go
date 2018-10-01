@@ -197,7 +197,7 @@ func (broker *Broker) prosume() {
 		msg.Ack()
 		log.Printf("SUBSCRIBER | acked a message from Pub/Sub topic | ID %s", msg.ID)
 
-		eventString := fmt.Sprintf("ID %s | Data %s", msg.ID, msg.Data)
+		eventString := fmt.Sprintf("data: ID %s | Data %s", msg.ID, msg.Data)
 		broker.Notifier <- []byte(eventString)
 	})
 	if err != nil {
@@ -228,11 +228,11 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	log.Println("HTTP SERVER | sse endpoint :8080/sse")
+	log.Println("HTTP SERVER | sse endpoint :8082/sse")
 	http.Handle("/sse", sseHandler())
 
-	log.Println("HTTP SERVER | prometheus metrics endpoint :8080/metrics")
+	log.Println("HTTP SERVER | prometheus metrics endpoint :8082/metrics")
 	http.Handle("/metrics", promhttp.Handler())
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8082", nil))
 }

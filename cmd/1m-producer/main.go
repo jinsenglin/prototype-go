@@ -82,8 +82,8 @@ func main() {
 	// Keep publishing
 	go publish()
 
-	log.Println("HTTP SERVER | prometheus metrics endpoint :8080/metrics")
+	log.Println("HTTP SERVER | prometheus metrics endpoint :8081/metrics")
 	http.Handle("/metrics", promhttp.Handler())
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8081", nil))
 }

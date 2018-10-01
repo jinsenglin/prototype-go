@@ -3,13 +3,21 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
+
+var (
+	flagSSEURL string
+)
+
+func init() {
+	flag.StringVar(&flagSSEURL, "url", "http://localhost:8082/sse", "SSE server url")
+}
 
 // Event ...
 type Event struct {
@@ -18,9 +26,9 @@ type Event struct {
 	Data []byte
 }
 
-func watch(endpoint string) (events chan Event, err error) {
+func watch() (events chan Event, err error) {
 
-	resp, err := http.Get(endpoint)
+	resp, err := http.Get(flagSSEURL)
 
 	if err != nil {
 		return nil, err
@@ -44,6 +52,8 @@ func watch(endpoint string) (events chan Event, err error) {
 				log.Fatalln(err)
 			}
 
+			log.Printf("DEBUG | LINE = %s", line)
+
 			switch {
 			case bytes.HasPrefix(line, []byte("data:")):
 				ev.Data = line
@@ -51,7 +61,7 @@ func watch(endpoint string) (events chan Event, err error) {
 				events <- ev
 				ev = Event{}
 			default:
-				log.Fatalln("GG")
+				log.Fatalf("FATAL | LINE %s", line)
 			}
 		}
 	}()
@@ -59,8 +69,8 @@ func watch(endpoint string) (events chan Event, err error) {
 	return events, nil
 }
 
-func virtualClient(endpoint string) {
-	events, err := watch(endpoint)
+func virtualClient() {
+	events, err := watch()
 	if err != nil {
 		log.Fatalln(err)
 
@@ -72,18 +82,13 @@ func virtualClient(endpoint string) {
 }
 
 func main() {
-	if len(os.Args) == 1 {
-		log.Fatalln("Usage: 1m-client <sse server endpoint>")
-	}
-
 	// TODO: simulate 10 virtual clients
-	sseServerEndpoint := os.Args[1]
 	for i := 0; i < 1; i++ {
-		go virtualClient(sseServerEndpoint)
+		go virtualClient()
 	}
 
-	log.Println("HTTP SERVER | prometheus metrics endpoint :8080/metrics")
+	log.Println("HTTP SERVER | prometheus metrics endpoint :8083/metrics")
 	http.Handle("/metrics", promhttp.Handler())
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8083", nil))
 }
