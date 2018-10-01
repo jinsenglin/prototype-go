@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	log.Println("prometheus metrics endpoint :8000/metrics")
+	log.Println("prometheus metrics endpoint :8080/metrics")
 
 	http.Handle("/metrics", promhttp.Handler())
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
