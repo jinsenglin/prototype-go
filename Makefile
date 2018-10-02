@@ -84,12 +84,12 @@ up-gke-stage:
 	kubectl apply -f k8s/GKE/service-account-helm.yaml
 	
 	# NOTE: keep watching until all system pods are running
-	# kubectl get po -n kube-system
+	# watch -n 5 'kubectl get po -n kube-system'
 
 	helm init --service-account helm
 
-	# NOTE: keep watching until all system tiller pod is running
-	# kubectl get po -n kube-system
+	# NOTE: keep watching until the system tiller deploy is available
+	# watch -n 5 'kubectl get deploy tiller-deploy -n kube-system'
 
 	# CLEANUP
 	# gcloud container clusters delete k8s-1m
