@@ -127,10 +127,10 @@ up-gke-prod:
 	# gcloud container clusters delete k8s-1m
 
 mod-replica-1m-client-in-k8s-by-gke:
-	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2 --set virtualClient=100 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
+	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2 --set virtualClient=10000 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 
 run-image-1m-client-in-k8s-by-gke:
-	helm install --name onem-client k8s/GKE/onem-client --set virtualClient=100 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
+	helm install --name onem-client k8s/GKE/onem-client --set virtualClient=10000 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 	
 	# CLEANUP STEPS
 	# helm delete --purge onem-client
