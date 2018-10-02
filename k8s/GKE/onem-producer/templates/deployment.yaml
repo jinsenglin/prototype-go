@@ -1,0 +1,70 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "onem-producer.fullname" . }}
+  labels:
+    app: {{ template "onem-producer.name" . }}
+    chart: {{ template "onem-producer.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "onem-producer.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "onem-producer.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: key-json
+      - name: config-volume
+        configMap:
+          name: gcp-project
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: GCP_PROJECT
+            valueFrom:
+              configMapKeyRef:
+                name: gcp-project
+                key: gcp-project-id
+          - name: GCP_KEYJSON
+            value: /etc/secret-volume/key.json
+          volumeMounts:
+          - name: secret-volume
+            readOnly: true
+            mountPath: "/etc/secret-volume"
+          ports:
+            - name: http
+              containerPort: 8081
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

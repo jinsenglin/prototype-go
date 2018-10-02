@@ -62,32 +62,57 @@ run-image-1m-producer-in-k8s-by-docker-for-mac:
 	echo "kubectl delete secret key-json"
 
 push-image-1m-client-to-gcp:
-	echo TODO
+	docker tag jinsenglin/1m-client:latest asia.gcr.io/${GCP_PROJECT}/1m-client:latest
+	gcloud auth configure-docker
+	docker push asia.gcr.io/${GCP_PROJECT}/1m-client:latest
 
 push-image-1m-consumer-to-gcp:
-	echo TODO
+	docker tag jinsenglin/1m-consumer:latest asia.gcr.io/${GCP_PROJECT}/1m-consumer:latest
+	gcloud auth configure-docker
+	docker push asia.gcr.io/${GCP_PROJECT}/1m-consumer:latest
 
 push-image-1m-producer-to-gcp:
-	echo TODO
+	docker tag jinsenglin/1m-producer:latest asia.gcr.io/${GCP_PROJECT}/1m-producer:latest
+	gcloud auth configure-docker
+	docker push asia.gcr.io/${GCP_PROJECT}/1m-producer:latest
+
+up-gke-stage:
+	gcloud container clusters create k8s-1m --num-nodes 1
+	kubectl apply -f k8s/GKE/service-account-helm.yaml
+	
+	# NOTE: keep watching until all system pods are running
+	# kubectl get po -n kube-system
+
+	helm init --service-account helm
+
+	# NOTE: keep watching until all system tiller pod is running
+	# kubectl get po -n kube-system
+
+	# CLEANUP STEPS
+	# gcloud container clusters delete k8s-1m
+
+up-gke-prod:
+	echo "TODO"
 
 run-image-1m-client-in-k8s-by-gke:
-	helm install --name onem-client k8s/GKE/onem-client
+	helm install --name onem-client k8s/GKE/onem-client --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 	echo "CLEANUP STEPS"
 	echo "helm delete --purge onem-client"
 
 run-image-1m-consumer-in-k8s-by-gke:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
 	kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
-	helm install --name onem-consumer k8s/GKE/onem-consumer
-	echo "CLEANUP STEPS"
-	echo "helm delete --purge onem-consumer"
-	echo "kubectl delete configmap gcp-project"
-	echo "kubectl delete secret key-json"
+	helm install --name onem-consumer k8s/GKE/onem-consumer --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-consumer
+	
+	# CLEANUP STEPS
+	# helm delete --purge onem-consumer
+	# kubectl delete configmap gcp-project
+	# kubectl delete secret key-json
 
 run-image-1m-producer-in-k8s-by-gke:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
 	kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
-	helm install --name onem-producer k8s/GKE/onem-producer
+	helm install --name onem-producer k8s/GKE/onem-producer --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-producer
 	echo "CLEANUP STEPS"
 	echo "helm delete --purge onem-producer"
 	echo "kubectl delete configmap gcp-project"
