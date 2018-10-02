@@ -85,7 +85,7 @@ push-image-1m-producer-to-gcp:
 up-gke-dev:
 	# CLUSTER SPEC: 1 node pool, 1 node per pool
 	#
-	# NODE SPEC
+	# NODE SPEC: n1-standard-1 (1 vCPU, 3.75 GB memory)
 	#
 	# allocatable:
     #   cpu: 940m
@@ -127,11 +127,14 @@ up-gke-prod:
 	# gcloud container clusters delete k8s-1m
 
 mod-replica-1m-client-in-k8s-by-gke:
-	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2 --set virtualClient=10000 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
+	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2 --set virtualClient=5000 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 
 run-image-1m-client-in-k8s-by-gke:
-	helm install --name onem-client k8s/GKE/onem-client --set virtualClient=10000 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
+	helm install --name onem-client k8s/GKE/onem-client --set virtualClient=5000 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 	
+	# EXPERIMENT RESULT
+	# 5000 vClient consumes 70% CPU
+
 	# CLEANUP STEPS
 	# helm delete --purge onem-client
 
