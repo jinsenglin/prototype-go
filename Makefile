@@ -111,7 +111,7 @@ up-gke-dev:
 	# gcloud container clusters delete k8s-1m
 
 up-gke-prod:
-	# CLUSTER SPEC: 3 node pools, 1 node per pool
+	# CLUSTER SPEC: 3 node pools, 1 node in default-pool, 0 node in <other>-pool
 
 	gcloud container clusters create k8s-1m --num-nodes 1
 	kubectl apply -f k8s/GKE/service-account-helm.yaml
