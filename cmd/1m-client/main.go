@@ -7,16 +7,19 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
-	flagSSEURL string
+	flagSSEURL        string
+	flagVirtualClient int
 )
 
 func init() {
 	flag.StringVar(&flagSSEURL, "url", "http://localhost:8082/sse", "SSE server url")
+	flag.IntVar(&flagVirtualClient, "client", 1, "number of virtual clients")
 }
 
 // Event ...
@@ -29,6 +32,8 @@ type Event struct {
 func watch() (events chan Event, err error) {
 
 	resp, err := http.Get(flagSSEURL)
+
+	// Block until a first message responsed
 
 	if err != nil {
 		return nil, err
@@ -67,24 +72,31 @@ func watch() (events chan Event, err error) {
 	return events, nil
 }
 
-func virtualClient() {
+func virtualClient(clientID string) {
+	log.Printf("CLIENT %s | receiving ...", clientID)
+
 	events, err := watch()
 	if err != nil {
 		log.Fatalln(err)
-
 	}
 
 	for event := range events {
-		log.Printf("CLIENT | received a message | DATA %s", event.Data)
+		log.Printf("CLIENT %s | received a message | DATA %s", clientID, event.Data)
 	}
 }
 
 func main() {
 	flag.Parse()
 
+	hostname, err := os.Hostname()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	// TODO: simulate 10 virtual clients
-	for i := 0; i < 1; i++ {
-		go virtualClient()
+	for i := 0; i < flagVirtualClient; i++ {
+		clientID := fmt.Sprintf("%s-%d", hostname, i)
+		go virtualClient(clientID)
 	}
 
 	log.Println("HTTP SERVER | prometheus metrics endpoint :8083/metrics")
