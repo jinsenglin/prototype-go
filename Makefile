@@ -38,14 +38,14 @@ run-image-1m-consumer:
 run-image-1m-producer:
 	docker run --rm -P -v ${GCP_KEYJSON}:${GCP_KEYJSON} -e GCP_PROJECT=${GCP_PROJECT} -e GCP_KEYJSON=${GCP_KEYJSON} -h onem-producer --name 1m-producer jinsenglin/1m-producer:latest
 
+mod-replica-1m-client-in-k8s-by-docker-for-mac:
+	helm upgrade onem-client k8s/DockerForMac/onem-client --set replicaCount=2
+
 run-image-1m-client-in-k8s-by-docker-for-mac:
 	helm install --name onem-client k8s/DockerForMac/onem-client
 
 	# CLEANUP
 	# helm delete --purge onem-client
-
-mod-replica-1m-client-in-k8s-by-docker-for-mac:
-	helm upgrade onem-client k8s/DockerForMac/onem-client --set replicaCount=2
 
 run-image-1m-consumer-in-k8s-by-docker-for-mac:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
@@ -126,14 +126,14 @@ up-gke-prod:
 	# CLEANUP
 	# gcloud container clusters delete k8s-1m
 
+mod-replica-1m-client-in-k8s-by-gke:
+	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2
+
 run-image-1m-client-in-k8s-by-gke:
 	helm install --name onem-client k8s/GKE/onem-client --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 	
 	# CLEANUP STEPS
 	# helm delete --purge onem-client
-
-mod-replica-1m-client-in-k8s-by-gke:
-	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2
 
 run-image-1m-consumer-in-k8s-by-gke:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
