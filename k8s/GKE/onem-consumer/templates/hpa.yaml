@@ -1,0 +1,12 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+    name: {{ template "onem-consumer.fullname" . }}
+spec:
+    scaleTargetRef:
+        apiVersion: extensions/v1beta1
+        kind: Deployment
+        name: {{ template "onem-consumer.fullname" . }}
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 50
