@@ -93,7 +93,6 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// TODO: simulate 10 virtual clients
 	for i := 0; i < flagVirtualClient; i++ {
 		clientID := fmt.Sprintf("%s-%d", hostname, i)
 		go virtualClient(clientID)
