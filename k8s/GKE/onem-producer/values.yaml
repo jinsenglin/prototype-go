@@ -38,7 +38,8 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-nodeSelector: {}
+nodeSelector:
+  cloud.google.com/gke-nodepool: default-pool
 
 tolerations: []
 

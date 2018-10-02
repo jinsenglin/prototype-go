@@ -79,8 +79,11 @@ push-image-1m-producer-to-gcp:
 	gcloud auth configure-docker
 	docker push asia.gcr.io/${GCP_PROJECT}/1m-producer:latest
 
-up-gke-stage:
-	# SPEC
+up-gke-dev:
+	# CLUSTER SPEC: 1 node pool, 1 node per pool
+	#
+	# NODE SPEC
+	#
 	# allocatable:
     #   cpu: 940m
     #   memory: 2708916Ki
@@ -105,7 +108,20 @@ up-gke-stage:
 	# gcloud container clusters delete k8s-1m
 
 up-gke-prod:
-	echo "TODO"
+	# CLUSTER SPEC: 3 node pools, 1 node per pool
+
+	gcloud container clusters create k8s-1m --num-nodes 1
+	kubectl apply -f k8s/GKE/service-account-helm.yaml
+	helm init --service-account helm
+	
+	# NOTE: keep watching until the system tiller deploy is available
+	# watch -n 5 'kubectl get deploy tiller-deploy -n kube-system'
+
+	gcloud container node-pools create consumer-pool --cluster k8s-1m --num-nodes 1
+	gcloud container node-pools create client-pool --cluster k8s-1m --num-nodes 1
+
+	# CLEANUP
+	# gcloud container clusters delete k8s-1m
 
 run-image-1m-client-in-k8s-by-gke:
 	helm install --name onem-client k8s/GKE/onem-client --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
