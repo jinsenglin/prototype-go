@@ -80,6 +80,16 @@ push-image-1m-producer-to-gcp:
 	docker push asia.gcr.io/${GCP_PROJECT}/1m-producer:latest
 
 up-gke-stage:
+	# SPEC
+	# allocatable:
+    #   cpu: 940m
+    #   memory: 2708916Ki
+    #   pods: "110"
+    # capacity:
+    #   cpu: "1"
+    #   memory: 3794356Ki
+    #   pods: "110"
+	
 	gcloud container clusters create k8s-1m --num-nodes 1
 	kubectl apply -f k8s/GKE/service-account-helm.yaml
 	
