@@ -44,6 +44,9 @@ run-image-1m-client-in-k8s-by-docker-for-mac:
 	# CLEANUP
 	# helm delete --purge onem-client
 
+mod-replica-1m-client-in-k8s-by-docker-for-mac:
+	helm upgrade onem-client k8s/DockerForMac/onem-client --set replicaCount=2
+
 run-image-1m-consumer-in-k8s-by-docker-for-mac:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
 	kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
@@ -128,6 +131,9 @@ run-image-1m-client-in-k8s-by-gke:
 	
 	# CLEANUP STEPS
 	# helm delete --purge onem-client
+
+mod-replica-1m-client-in-k8s-by-gke:
+	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2
 
 run-image-1m-consumer-in-k8s-by-gke:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
