@@ -16,6 +16,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -26,6 +27,14 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/api/option"
 )
+
+var (
+	flagInterval time.Duration
+)
+
+func init() {
+	flag.DurationVar(&flagInterval, "interval", 5*time.Second, "interval of publishing a message")
+}
 
 const (
 	demoPubsubTopic  = "echo"
@@ -56,7 +65,7 @@ func publish() {
 	t := client.Topic(demoPubsubTopic)
 	log.Println("PUBLISHER | publishing ...")
 	for {
-		time.Sleep(5 * time.Second)
+		time.Sleep(flagInterval)
 
 		result := t.Publish(ctx, &pubsub.Message{
 			Data: []byte("msg"),
@@ -75,6 +84,8 @@ func publish() {
 }
 
 func main() {
+	flag.Parse()
+
 	if err := envParse(); err != nil {
 		log.Fatalln(err)
 	}

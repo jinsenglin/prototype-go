@@ -30,6 +30,8 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/app"]
+          args: ["-interval", "{{ .Values.producer.interval }}"]
           env:
           - name: GCP_PROJECT
             valueFrom:

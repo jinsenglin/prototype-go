@@ -24,7 +24,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/app"]
-          args: ["-url", "http://onem-consumer/sse", "-client", "{{ .Values.virtualClient }}"]
+          args: ["-url", "http://onem-consumer/sse", "-client", "{{ .Values.client.virtualClient }}"]
           ports:
             - name: http
               containerPort: 8083
