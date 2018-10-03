@@ -120,8 +120,8 @@ up-gke-prod:
 	# NOTE: keep watching until the system tiller deploy is available
 	# watch -n 5 'kubectl get deploy tiller-deploy -n kube-system'
 
-	gcloud container node-pools create consumer-pool --cluster k8s-1m --num-nodes 0 --enable-autoscaling --min-nodes 1 --max-nodes 5
-	gcloud container node-pools create client-pool --cluster k8s-1m --num-nodes 0 --enable-autoscaling --min-nodes 1 --max-nodes 5
+	gcloud container node-pools create consumer-pool --cluster k8s-1m --num-nodes 0 --enable-autoscaling --min-nodes 1 --max-nodes 10
+	gcloud container node-pools create client-pool --cluster k8s-1m --num-nodes 0 --enable-autoscaling --min-nodes 1 --max-nodes 140
 
 	# CLEANUP
 	# gcloud container clusters delete k8s-1m
