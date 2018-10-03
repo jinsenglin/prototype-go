@@ -155,6 +155,9 @@ run-image-1m-producer-in-k8s-by-gke:
 	# kubectl delete configmap gcp-project
 	# kubectl delete secret key-json
 
+mod-rate-1m-producer-in-k8s-by-gke:
+	helm upgrade onem-producer k8s/GKE/onem-producer --set producer.interval=3s --set resources.requests.cpu=50m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-producer
+
 run-cmd-ls:
 	go build -race -o out/ls cmd/ls/*.go
 	./out/ls / /non-exist
