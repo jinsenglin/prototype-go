@@ -146,8 +146,8 @@ run-image-1m-consumer-in-k8s-by-gke:
 	# kubectl delete secret key-json
 
 run-image-1m-producer-in-k8s-by-gke:
-	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
-	kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
+	#kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
+	#kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
 	helm install --name onem-producer k8s/GKE/onem-producer --set resources.requests.cpu=50m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-producer
 	
 	# CLEANUP STEPS
