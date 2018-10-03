@@ -23,9 +23,21 @@ import (
 	"time"
 
 	"cloud.google.com/go/pubsub"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/api/option"
 )
+
+var (
+	clientCount = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "client_count",
+		Help: "Current number of connected clients.",
+	})
+)
+
+func init() {
+	prometheus.MustRegister(clientCount)
+}
 
 const (
 	demoPubsubTopic  = "echo"
@@ -160,12 +172,14 @@ func (broker *Broker) listen() {
 			// A new client has connected.
 			// Register their message channel
 			broker.clients[s] = true
+			clientCount.Set(float64(len(broker.clients)))
 			log.Printf("BROKER | added a client . %d registered clients", len(broker.clients))
 		case s := <-broker.closingClients:
 
 			// A client has dettached and we want to
 			// stop sending them messages.
 			delete(broker.clients, s)
+			clientCount.Set(float64(len(broker.clients)))
 			log.Printf("BROKER | removed a client. %d registered clients", len(broker.clients))
 		case event := <-broker.Notifier:
 
