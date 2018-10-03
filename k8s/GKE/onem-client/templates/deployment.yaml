@@ -18,6 +18,8 @@ spec:
       labels:
         app: {{ template "onem-client.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        prometheus.io/scrape: 'true'
     spec:
       containers:
         - name: {{ .Chart.Name }}
