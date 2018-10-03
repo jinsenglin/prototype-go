@@ -127,13 +127,13 @@ up-gke-prod:
 	# gcloud container clusters delete k8s-1m
 
 mod-replica-1m-client-in-k8s-by-gke:
-	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2 --set virtualClient=5000 --set resources.requests.cpu=700m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
+	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2 --set virtualClient=5000 --set resources.requests.cpu=500m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 
 run-image-1m-client-in-k8s-by-gke:
-	helm install --name onem-client k8s/GKE/onem-client --set virtualClient=5000 --set resources.requests.cpu=700m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
+	helm install --name onem-client k8s/GKE/onem-client --set virtualClient=5000 --set resources.requests.cpu=500m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 	
 	# EXPERIMENT RESULT
-	# 5000 vClient consumes 70% CPU
+	# 5000 vClient consumes 50% CPU (1 min interval (mean))
 
 	# CLEANUP STEPS
 	# helm delete --purge onem-client
@@ -151,7 +151,7 @@ run-image-1m-consumer-in-k8s-by-gke:
 run-image-1m-producer-in-k8s-by-gke:
 	kubectl create secret generic key-json --from-file=${GCP_KEYJSON}
 	kubectl create configmap gcp-project --from-literal=gcp-project-id=${GCP_PROJECT}
-	helm install --name onem-producer k8s/GKE/onem-producer --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-producer
+	helm install --name onem-producer k8s/GKE/onem-producer --set resources.requests.cpu=50m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-producer
 	
 	# CLEANUP STEPS
 	# helm delete --purge onem-producer
