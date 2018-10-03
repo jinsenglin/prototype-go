@@ -113,7 +113,7 @@ up-gke-dev:
 up-gke-prod:
 	# CLUSTER SPEC: 3 node pools, 1 node in default-pool, 0 node in <other>-pool
 
-	gcloud container clusters create k8s-1m --num-nodes 1
+	gcloud container clusters create k8s-1m --num-nodes 1 --cluster-version=1.10
 	kubectl apply -f k8s/GKE/service-account-helm.yaml
 	helm init --service-account helm
 	
@@ -127,10 +127,10 @@ up-gke-prod:
 	# gcloud container clusters delete k8s-1m
 
 mod-replica-1m-client-in-k8s-by-gke:
-	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2 --set virtualClient=5000 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
+	helm upgrade onem-client k8s/GKE/onem-client --set replicaCount=2 --set virtualClient=5000 --set resources.requests.cpu=700m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 
 run-image-1m-client-in-k8s-by-gke:
-	helm install --name onem-client k8s/GKE/onem-client --set virtualClient=5000 --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
+	helm install --name onem-client k8s/GKE/onem-client --set virtualClient=5000 --set resources.requests.cpu=700m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 	
 	# EXPERIMENT RESULT
 	# 5000 vClient consumes 70% CPU
