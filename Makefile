@@ -132,9 +132,6 @@ mod-replica-1m-client-in-k8s-by-gke:
 run-image-1m-client-in-k8s-by-gke:
 	helm install --name onem-client k8s/GKE/onem-client --set virtualClient=7500 --set resources.requests.cpu=750m --set image.repository=asia.gcr.io/${GCP_PROJECT}/1m-client
 	
-	# EXPERIMENT RESULT
-	# 5000 vClient consumes 50% CPU (1 min interval (mean))
-
 	# CLEANUP STEPS
 	# helm delete --purge onem-client
 
