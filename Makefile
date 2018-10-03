@@ -96,7 +96,7 @@ up-gke-dev:
     #   memory: 3794356Ki
     #   pods: "110"
 	
-	gcloud container clusters create k8s-1m --num-nodes 1
+	gcloud container clusters create k8s-1m --num-nodes 1 --cluster-version=1.10
 	kubectl apply -f k8s/GKE/service-account-helm.yaml
 	
 	# NOTE: keep watching until all system pods are running
