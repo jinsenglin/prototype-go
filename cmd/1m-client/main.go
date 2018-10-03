@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -81,7 +82,8 @@ func virtualClient(clientID string) {
 	}
 
 	for event := range events {
-		log.Printf("CLIENT %s | received a message | DATA %s", clientID, event.Data)
+		t := time.Now()
+		log.Printf("CLIENT %s | %s | received a message | DATA %s", clientID, t.Format(time.RFC3339), event.Data)
 	}
 }
 
