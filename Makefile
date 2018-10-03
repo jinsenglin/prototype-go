@@ -110,7 +110,7 @@ up-gke-dev:
 	# CLEANUP
 	# gcloud container clusters delete k8s-1m
 
-	# ENABLE PROMETHEUS TO STACKDRIVER
+	# ENABLE STACKDRIVER PROMETHEUS
 	# curl -sSO "https://storage.googleapis.com/stackdriver-prometheus-documentation/rbac-setup.yml"
 	# kubectl apply -f rbac-setup.yml --as=admin --as-group=system:masters
 	# curl -sSO "https://storage.googleapis.com/stackdriver-prometheus-documentation/prometheus-service.yml"
