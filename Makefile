@@ -110,6 +110,16 @@ up-gke-dev:
 	# CLEANUP
 	# gcloud container clusters delete k8s-1m
 
+	# ENABLE PROMETHEUS TO STACKDRIVER
+	# curl -sSO "https://storage.googleapis.com/stackdriver-prometheus-documentation/rbac-setup.yml"
+	# kubectl apply -f rbac-setup.yml --as=admin --as-group=system:masters
+	# curl -sSO "https://storage.googleapis.com/stackdriver-prometheus-documentation/prometheus-service.yml"
+	# MODIFY prometheus-service.yml
+	# * _stackdriver_project_id: [PROJECT_ID]
+	# * _kubernetes_cluster_name: [CLUSTER_NAME]
+	# * _kubernetes_location: [CLUSTER_LOCATION]
+	# kubectl apply -f prometheus-service.yml
+
 up-gke-prod:
 	# CLUSTER SPEC: 3 node pools, 1 node in default-pool, 0 node in <other>-pool
 
