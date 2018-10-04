@@ -132,7 +132,12 @@ up-gke-prod:
 		--enable-stackdriver-kubernetes \
 		--enable-private-nodes \
     	--master-ipv4-cidr "172.16.0.0/28" \
-		--enable-ip-alias
+		--enable-ip-alias \
+		--no-enable-master-authorized-networks
+	# NEED DISABLE AUTHORIZED NETWORK BY CONSOLE BEFORE USING kubectl command-line
+	# NEED DISABLE AUTHORIZED NETWORK BY CONSOLE BEFORE USING kubectl command-line
+	# NEED DISABLE AUTHORIZED NETWORK BY CONSOLE BEFORE USING kubectl command-line
+	# NEED DISABLE AUTHORIZED NETWORK BY CONSOLE BEFORE USING kubectl command-line
 	# NEED DISABLE AUTHORIZED NETWORK BY CONSOLE BEFORE USING kubectl command-line
 
 	kubectl apply -f k8s/GKE/service-account-helm.yaml
