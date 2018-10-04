@@ -96,7 +96,10 @@ up-gke-dev:
     #   memory: 3794356Ki
     #   pods: "110"
 	
-	gcloud beta container clusters create k8s-1m --num-nodes 1 --cluster-version=1.10 --enable-stackdriver-kubernetes
+	gcloud beta container clusters create k8s-1m \
+		--num-nodes 1 \
+		--cluster-version=1.10 \
+		--enable-stackdriver-kubernetes
 	kubectl apply -f k8s/GKE/service-account-helm.yaml
 	
 	# NOTE: keep watching until all system pods are running
@@ -123,7 +126,15 @@ up-gke-dev:
 up-gke-prod:
 	# CLUSTER SPEC: 3 node pools, 1 node in default-pool, 0 node in <other>-pool
 
-	gcloud beta container clusters create k8s-1m --num-nodes 1 --cluster-version=1.10 --enable-stackdriver-kubernetes
+	gcloud beta container clusters create k8s-1m \
+		--num-nodes 1 \
+		--cluster-version=1.10 \
+		--enable-stackdriver-kubernetes \
+		--enable-private-nodes \
+    	--master-ipv4-cidr "172.16.0.0/28" \
+		--enable-ip-alias
+	# NEED DISABLE AUTHORIZED NETWORK BY CONSOLE BEFORE USING kubectl command-line
+
 	kubectl apply -f k8s/GKE/service-account-helm.yaml
 	helm init --service-account helm
 	
